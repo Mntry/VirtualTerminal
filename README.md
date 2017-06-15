@@ -1,7 +1,7 @@
 # Monetary VirtualTerminal
 A client-side web terminal for Monetary services!
 
-Head here to check it out: http://vt.monetary.co/
+Head here to check it out: https://vt.monetary.co/
 
 ![Monetary VirtualTerminal](https://monetary.co/wp-content/uploads/2016/09/monetaryLogoHeaderSticky.png)
 
