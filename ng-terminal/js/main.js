@@ -3,6 +3,7 @@
 app.run(function ($rootScope, $http) {
   $rootScope.request = {}
   $rootScope.data = {};
+  $rootScope.trancode = '';
   $rootScope.api = { url: localStorage.api_url || '' };
   $rootScope.header = { Authorization: localStorage.authorization || '' };
 	if (sessionStorage.transactions === undefined) {
@@ -28,7 +29,7 @@ app.controller('modalCtrl', function ($rootScope, $scope, $document, $http, $mod
         // POST
         var req = {
             method: 'POST',
-            url: $scope.api.url + '/storedvalue/' + $rootScope.trancode + '/' + path,
+            url: $scope.api.url + '/storedvalue/' + $scope.trancode + '/' + path,
             headers: $scope.header,
             data: request
         }
