@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html ng-app="mVirtualTerminal">
+<head>
+    <title>Monetary Virtual Terminal</title>
+    <script src="js/1.2.16/angular.min.js"></script>
+    <script src="js/ui-bootstrap-tpls-0.12.1.min.js"></script>
+    <script src="js/main.js"></script>
+    <link rel="stylesheet" href="css/3.3.4/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/customstyle.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+</head>
+<body>
+    <div class="container">
+        <form class="form-terminal" ng-controller="mCtrl">
+            <div class="form-horizontal">
+                <div class="row">
+                    <img class="page-header img-responsive" src="img/logo.png">
+                </div>
+                <div class="form-group">
+                    <div class="btn-group btn-group-justified">
+                        <a class="btn btn-default" ng-click="request.trancode = 'Sale'" ng-class="{active: request.trancode == 'Sale' }">Sale</a>
+                        <a class="btn btn-default" ng-click="request.trancode = 'Load'" ng-class="{active: request.trancode == 'Load' }">Load</a>
+                        <a class="btn btn-default" ng-click="request.trancode = 'Balance'; request.amount = null" ng-class="{active: request.trancode == 'Balance' }">Balance</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5">Amount ($)</label>
+                    <div class="col-sm-7">
+                        <input type="text" ng-model="request.amount" class="form-control" ng-disabled="request.trancode == 'Balance'" />
+                    </div>
+                </div>
+                <div class="form-group" hidden="hidden">
+                    <div class="col-sm-6">
+                        <label class="checkbox"><input type="checkbox" ng-model="request.no_nsf">No NSF</label>
+                        <label class="checkbox"><input type="checkbox" ng-model="request.override_cvv">Override CVV</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="checkbox"><input type="checkbox" ng-model="request.promo">Promotional</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="btn-group btn-group-justified">
+                        <a class="btn btn-monetary" ng-click="open('swipe.html','sm','static')" ng-disabled="request.trancode == null">Swipe</a>
+                        <a class="btn btn-monetary" ng-click="open('manual.html','sm','static')" ng-disabled="request.trancode == null">Manual</a>
+                    </div>
+                </div>
+                <hr class="row" />
+                <div class="form-group">
+                    <div class="btn-group-justified">
+          					<a class="btn btn-default btn-sm" ng-click="open('history.html','sm','static')">History</a>
+          					<a class="btn btn-default btn-sm" ng-click="open('config.html','sm','static')">Configure</a>
+          				</div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

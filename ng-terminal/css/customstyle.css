@@ -1,0 +1,54 @@
+.form-terminal {
+  max-width: 280px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.btn-monetary { 
+  color: #FFFFFF; 
+  background-color: #2962FF; 
+  border-color: #130269; 
+} 
+ 
+.btn-monetary:hover, 
+.btn-monetary:focus, 
+.btn-monetary:active, 
+.btn-monetary.active, 
+.open .dropdown-toggle.btn-monetary { 
+  color: #FFFFFF; 
+  background-color: #0233BA; 
+  border-color: #130269; 
+} 
+ 
+.btn-monetary:active, 
+.btn-monetary.active, 
+.open .dropdown-toggle.btn-monetary { 
+  background-image: none; 
+} 
+ 
+.btn-monetary.disabled, 
+.btn-monetary[disabled], 
+fieldset[disabled] .btn-monetary, 
+.btn-monetary.disabled:hover, 
+.btn-monetary[disabled]:hover, 
+fieldset[disabled] .btn-monetary:hover, 
+.btn-monetary.disabled:focus, 
+.btn-monetary[disabled]:focus, 
+fieldset[disabled] .btn-monetary:focus, 
+.btn-monetary.disabled:active, 
+.btn-monetary[disabled]:active, 
+fieldset[disabled] .btn-monetary:active, 
+.btn-monetary.disabled.active, 
+.btn-monetary[disabled].active, 
+fieldset[disabled] .btn-monetary.active { 
+  background-color: #2962FF; 
+  border-color: #130269; 
+} 
+ 
+.btn-monetary .badge { 
+  color: #2962FF; 
+  background-color: #FFFFFF; 
+}
+
+.approved {color: green}
+.declined {color: red}
