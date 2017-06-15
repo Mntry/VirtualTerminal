@@ -23,7 +23,7 @@ app.controller('mCtrl', function ($scope, $modal) {
 });
 
 app.controller('modalCtrl', function ($rootScope, $scope, $document, $http, $modal, $modalInstance, $window) {
-    $scope.process = function (path, request) {
+    $scope.process = function (request, path) {
 		    $rootScope.data = {};
         // POST
         var req = {
@@ -83,7 +83,7 @@ app.controller('modalCtrl', function ($rootScope, $scope, $document, $http, $mod
 
     $scope.void = function (reference) {
 		$rootScope.trancode = 'sale';
-		$scope.process(reference + '/void', '');
+		$scope.process('', reference + '/void');
     };
 
     $scope.voided = function (reference, voided_id) {
