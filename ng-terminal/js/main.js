@@ -24,7 +24,7 @@ app.controller('mCtrl', function ($scope, $modal) {
 });
 
 app.controller('modalCtrl', function ($rootScope, $scope, $document, $http, $modal, $modalInstance, $window) {
-    $scope.process = function (request, path) {
+    $scope.process = function (request, trancode, path) {
 		    $rootScope.data = {};
         // POST
         var req = {
@@ -83,8 +83,7 @@ app.controller('modalCtrl', function ($rootScope, $scope, $document, $http, $mod
     };
 
     $scope.void = function (reference) {
-		$rootScope.trancode = 'sale';
-		$scope.process('', reference + '/void');
+		$scope.process('', 'sale', reference + '/void');
     };
 
     $scope.voided = function (reference, voided_id) {
@@ -108,7 +107,7 @@ app.directive('swipeReceiver', ['$document', function ($document) {
             event.preventDefault();
             if(event.which == 13) { // On ENTER submit parent form
               $document.off('keypress');
-              scope.process(scope.request);
+              scope.process(scope.request, scope.trancode, '');
             }
             else if (event.which == 27) // On ESC cancel swipe
             {
