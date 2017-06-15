@@ -23,12 +23,12 @@ app.controller('mCtrl', function ($scope, $modal) {
 });
 
 app.controller('modalCtrl', function ($rootScope, $scope, $document, $http, $modal, $modalInstance, $window) {
-    $scope.process = function (url, request) {
+    $scope.process = function (path, request) {
 		    $rootScope.data = {};
         // POST
         var req = {
             method: 'POST',
-            url: $scope.api.url,
+            url: $scope.api.url + '/storedvalue/' + $rootScope.trancode + '/' + path,
             headers: $scope.header,
             data: request
         }
@@ -82,7 +82,8 @@ app.controller('modalCtrl', function ($rootScope, $scope, $document, $http, $mod
     };
 
     $scope.void = function (reference) {
-		  $scope.process('sale/' + reference + '/void', '')
+		$rootScope.trancode = 'sale';
+		$scope.process(reference + '/void', '');
     };
 
     $scope.voided = function (reference, voided_id) {
