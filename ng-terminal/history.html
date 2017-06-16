@@ -10,10 +10,10 @@
 			<th>Void</th>
 		</tr>
 		<tr ng-repeat="item in history">
-			<td>{{item.trancode}}</td>
-			<td>*{{item.account.substr(id.length - 4);}}</td>
-			<td>{{item.amount}}</td>
-			<td><button type="button" class="btn btn-danger btn-sm" ng-disabled="voided(item.reference, item.voided_id)" ng-click="void(item.reference)">Void</button></td>
+			<td>{{item.Trancode}}</td>
+			<td>*{{item.Account.substr(id.length - 4);}}</td>
+			<td>{{item.Amount}}</td>
+			<td><button type="button" class="btn btn-danger btn-sm" ng-disabled="voided(item.RefNo, item.voided_id)" ng-click="void(item.RefNo)">Void</button></td>
 		</tr>
 	</table>
 </div>

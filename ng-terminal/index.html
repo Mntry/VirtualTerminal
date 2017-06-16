@@ -18,29 +18,29 @@
                 </div>
                 <div class="form-group">
                     <div class="btn-group btn-group-justified">
-                        <a class="btn btn-default" ng-click="trancode = 'Sale'" ng-class="{active: trancode == 'Sale' }">Sale</a>
-                        <a class="btn btn-default" ng-click="trancode = 'Load'" ng-class="{active: trancode == 'Load' }">Load</a>
-                        <a class="btn btn-default" ng-click="trancode = 'Balance'; request.amount = null" ng-class="{active: trancode == 'Balance' }">Balance</a>
+                        <a class="btn btn-default" ng-click="$root.trancode = 'Sale'" ng-class="{active: $root.trancode == 'Sale' }">Sale</a>
+                        <a class="btn btn-default" ng-click="$root.trancode = 'Load'" ng-class="{active: $root.trancode == 'Load' }">Load</a>
+                        <a class="btn btn-default" ng-click="$root.trancode = 'Balance'; $root.request.amount = null" ng-class="{active: $root.trancode == 'Balance' }">Balance</a>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-sm-5">Amount ($)</label>
                     <div class="col-sm-7">
-                        <input type="text" ng-model="request.Amount" class="form-control" ng-disabled="trancode == 'Balance'" />
+                        <input type="text" ng-model="$root.request.Amount" class="form-control" ng-disabled="$root.trancode == 'Balance'" />
                     </div>
                 </div>
                 <div class="form-group" hidden="hidden">
                     <div class="col-sm-6">
-                        <label class="checkbox"><input type="checkbox" ng-model="request.OverrideCVV">Override CVV</label>
+                        <label class="checkbox"><input type="checkbox" ng-model="$root.request.OverrideCVV">Override CVV</label>
                     </div>
                     <div class="col-sm-6">
-                        <label class="checkbox"><input type="checkbox" ng-model="request.Promo">Promotional</label>
+                        <label class="checkbox"><input type="checkbox" ng-model="$root.request.Promo">Promotional</label>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="btn-group btn-group-justified">
-                        <a class="btn btn-monetary" ng-click="open('swipe.html','sm','static')" ng-disabled="trancode == ''">Swipe</a>
-                        <a class="btn btn-monetary" ng-click="open('manual.html','sm','static')" ng-disabled="trancode == ''">Manual</a>
+                        <a class="btn btn-monetary" ng-click="open('swipe.html','sm','static')" ng-disabled="$root.trancode == ''">Swipe</a>
+                        <a class="btn btn-monetary" ng-click="open('manual.html','sm','static')" ng-disabled="$root.trancode == ''">Manual</a>
                     </div>
                 </div>
                 <hr class="row" />
