@@ -13,6 +13,7 @@ app.run(function ($rootScope, $http) {
 });
 
 app.controller('mCtrl', function ($scope, $modal) {
+
     $scope.open = function (templateUrl, size, backdrop) {
         $modal.open({
             templateUrl: templateUrl,
@@ -21,6 +22,9 @@ app.controller('mCtrl', function ($scope, $modal) {
             backdrop: backdrop
         });
     };
+    if ($scope.api.url == '' || $scope.header.Authorization == '') {
+        $scope.open('config.html', 'sm', 'static');
+    }
 });
 
 app.controller('modalCtrl', function ($rootScope, $scope, $document, $http, $modal, $modalInstance, $window) {
@@ -82,8 +86,8 @@ app.controller('modalCtrl', function ($rootScope, $scope, $document, $http, $mod
         $rootScope.request = {};
     };
 
-    $scope.void = function (reference) {
-        $scope.process('', 'sale', reference + '/void');
+    $scope.void = function (transcode, reference) {
+        $scope.process('', transcode, reference + '/void');
     };
     //TODO figure out when voided_id is provided
     $scope.voided = function (reference, voided_id) {
