@@ -1,17 +1,17 @@
 ﻿<div class="modal-header">
-    <div>{{ data.response.trancode }}</div>
-    <label ng-style="{'font-size': 'x-large'}" ng-class="{'approved': data.response.status == 'Approved', 'declined': data.response.status != 'Approved'}">
-        {{ data.response.status }}
+    <div>{{$root.trancode }}</div>
+    <label ng-style="{'font-size': 'x-large'}" ng-class="{'approved': data.response.Status == 'Approved', 'declined': data.response.Status != 'Approved'}">
+        {{ data.response.Status }}
     </label>
 </div>
 <div class="modal-body" style="">
-	<img ng-hide="data.response.status != null" class="img-responsive center-block" src="img/processing.gif" />
-    <div ng-hide="data.response.message == 'Approved'">{{ data.response.message }}</div>
-    <div ng-hide="data.response.amount == null">Amount: {{ data.response.amount }}</div>
-    <div ng-hide="data.response.balance == null">Balance: {{ data.response.balance }}</div>
-    <div ng-hide="data.response.points == null">Points: {{ data.response.points }}</div>
-    <div ng-hide="data.response.account == null">Account: {{ data.response.identifier || data.response.account }}</div>
+	<img ng-hide="data.response.Status != null" class="img-responsive center-block" src="img/processing.gif" />
+    <div ng-hide="data.response.Message == 'Approved'">{{ data.response.Message }}</div>
+    <div ng-hide="data.response.Amount == null">Amount: {{ data.response.Amount }}</div>
+    <div ng-hide="data.response.Balance == null">Balance: {{ data.response.Balance }}</div>
+    <div ng-hide="data.response.Points == null">Points: {{ data.response.Points }}</div>
+    <div ng-hide="data.response.Account == null">Account: {{ data.response.Identifier || data.response.Account }}</div>
 </div>
 <div class="modal-footer">
-    <button ng-disabled="data.response.status == null" type="button" class="btn btn-default" ng-click="ok()">OK</button>
+    <button ng-disabled="data.response.Status == null" type="button" class="btn btn-default" ng-click="ok()">OK</button>
 </div>
