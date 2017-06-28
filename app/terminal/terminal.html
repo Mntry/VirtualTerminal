@@ -1,0 +1,82 @@
+<h4>One Time Payment</h4>
+<p>
+  <small>
+    Run a single transaction
+  </small>
+</p>
+<div ng-show="!$root.config.url">cannot use virtual terminal until configured</div>
+  <form ng-submit="requestPayment()" ng-show="$root.config.url">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="btn-group form-group form-group-default">
+          <a class="btn btn-complete" ng-click="op = 'Credit'" ng-class="{active:op=='Credit'}">Credit</a>
+          <a class="btn btn-complete" ng-click="op = 'Gift'" ng-class="{active:op=='Gift'}">Gift</a>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group form-group-default input-group">
+          <span class="input-group-addon">
+            <i class="fa fa-dollar"></i>
+          </span>
+          <label>Amount</label>
+          <input type="text" class="form-control" placeholder="0.00" ng-model="request.Amount" required>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group form-group-default">
+          <label>Card Number</label>
+          <input type="text" placeholder="################" class="form-control" ng-model="request.Account" required>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group form-group-default"  ng-class="{disabled: op=='Gift'}">
+          <label>Expiration Date</label>
+          <input type="text" placeholder="1231" class="form-control" ng-model="request.Expiration" ng-disabled="op=='Gift'">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group form-group-default">
+          <label>CVV</label>
+          <input type="text" placeholder="###" class="form-control" ng-model="request.CVV">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group form-group-default" ng-class="{disabled: op=='Gift'}">
+          <label>Zip</label>
+          <input type="text" placeholder="#####" class="form-control" ng-model="request.Zip"  ng-disabled="op=='Gift'">
+        </div>
+      </div>
+      <div class="col-sm-6">
+      </div>
+    </div>
+    <button type="submit" ng-submit="requestPayment()" class="btn btn-primary btn-block m-t-10">Process Transaction</button>
+  </form>
+  <div ng-show="responses.length > 0">
+  <hr>
+  <h5>Responses</h5>
+  <table style="width:100%;text-align:left;">
+    <thead>
+      <tr>
+        <th>Account(last4)</th>
+        <th>Amount</th>
+        <th>Brand</th>
+        <th>RefNo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="r in responses">
+        <td>{{r.Account}}</td>
+        <td>{{r.Amount}}</td>
+        <td>{{r.Brand}}</td>
+        <td>{{r.RefNo}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="m-t-20" ng-repeat="response in responses">
+      <span>{{response|json}}</span>
+  </div>
+</div>

@@ -1,0 +1,129 @@
+<h4>On-going Payments</h4>
+<div ng-show="!$root.config.url">cannot use virtual terminal until configured</div>
+  <form ng-submit="authAndAddCard()" ng-show="$root.config.url && mode == 'add'" name="addAccount" novalidate>
+    <h5>Add Account</h5>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group form-group-default">
+          <label>Account Name</label>
+          <input type="text" placeholder="John Doe" class="form-control" ng-model="alias" required>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group form-group-default input-group">
+          <span class="input-group-addon">
+            <i class="fa fa-dollar"></i>
+          </span>
+          <label>Recurring Amount</label>
+          <input type="text" class="form-control" placeholder="0.00" ng-model="reccuringAmount" name="amount" required>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group form-group-default">
+          <label>Card Number</label>
+          <input type="text" placeholder="0000000000000000" class="form-control" ng-model="request.Account" name="account" required>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group form-group-default">
+          <label>Expiration Date</label>
+          <input type="text" placeholder="1231" class="form-control" ng-model="request.Expiration" name="expiriation" required>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group form-group-default">
+          <label>CVV</label>
+          <input type="text" placeholder="000" class="form-control" ng-model="request.CVV" name="cvv">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group form-group-default">
+          <label>Zip</label>
+          <input type="text" placeholder="00000" class="form-control" ng-model="request.Zip" name="zip" >
+        </div>
+      </div>
+    </div>
+    <button type="submit" ng-submit="authAndAddCard()" class="btn btn-primary btn-cons m-t-10">Add</button>
+    <button ng-click="mode='process'" class="btn btn-danger btn-cons m-t-10">Cancel</button>
+  </form>
+  <div ng-show="mode == 'process'" ng-disabled="processing">
+    <p>
+      <small>
+        Run a recurring transaction on multiple saved payment accounts
+      </small>
+    </p>
+    <p>
+      Click "Process" to run a payment from all cards displayed in the "Accounts" section below.
+    </p>
+
+    <span ng-show="processing">Input disabled while processing...</span>
+    <button  ng-hide="!savedAccounts || savedAccounts.length == 0 || processing" ng-click="saveAndBulkProcess(savedAccounts)" class="btn btn-primary btn-block m-t-10">Process</button>
+
+    <hr />
+    <h5 class="m-t-20">Accounts</h5>
+    <p>
+      Click "Add Accounts" to add a card and on-going payment amount.
+    </p>
+    <button ng-click="mode = 'add'" class="btn btn-complete btn-xs m-t-10 m-r-10">Add Account</button>
+    <button ng-show="hasChanges == true" ng-click="saveAmountChanges()" class="btn btn-success btn-xs m-t-10">Save</button>
+    <button ng-click="backup()" class="btn btn-complete btn-xs m-t-10 m-r-10">Backup</button>
+    <button ng-click="mode = 'import'" class="btn btn-complete btn-xs m-t-10 m-r-10">Import</button>
+    <div class="table-responsive">
+      <div id="detailedTable_wrapper" class="dataTables_wrapper form-inline no-footer">
+        <table class="table table-hover table-condensed table-detailed dataTable no-footer" role="grid" ng-show="savedAccounts.length > 0">
+          <thead>
+            <tr role="row">
+              <th style="" class="sorting_disabled" rowspan="1" colspan="1">Alias</th>
+              <th style="" class="sorting_disabled" rowspan="1" colspan="1">Last Processed</th>
+              <th style="" class="sorting_disabled" rowspan="1" colspan="1">Recurring</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-class="{shown: r.showHistory}" ng-repeat-start="r in savedAccounts">
+              <td class="v-align-middle semi-bold" ng-click="r.showHistory = !(r.showHistory);">{{r.alias}}</td>
+              <td class="v-align-middle bold">{{r.lastProcessedDate | date:'MM/dd/yyyy @ h:mma'}}</td>
+              <td class="v-align-middle">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="fa fa-dollar"></i>
+                  </span>
+                  <input type="text" class="form-control" ng-model="r.amount" ng-change="$parent.hasChanges = true">
+                </div>
+              </td>
+            </tr>
+            <tr ng-show="r.showHistory" class="row-details" ng-click="r.showHistory = !(r.showHistory);">
+              <td colspan="3">
+                <h5>History: {{r.account}}</h5>
+                <table class="table table-inline history-table">
+                  <tr ng-repeat="h in r.history">
+                    <td>{{h.amount}}</td>
+                    <td>{{h.processedDate | date:'MM/dd/yyyy @ h:mma'}}</td>
+                  </tr>
+                  <tr ng-show="r.history.length==0"><td colspan="4">N/A</td></tr>
+                </table>
+                <button ng-click="removeAccount(r)" class="btn btn-success btn-xs m-b-30">Delete Account</button>
+              </td>
+            </tr>
+            <tr ng-repeat-end ng-show="r.showHistory">
+              <td colspan="3" style="text-align:right;" class="btn-close-me">
+                <button ng-click="r.showHistory = false" class="btn btn-complete btn-xs">Close</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <span ng-show="!savedAccounts || savedAccounts.length == 0">No saved Accounts</span>
+  </div>
+
+</div>
+<div ng-show="mode=='import'">
+  <p>copy contents of your 'BulkProcessingBackup.json' file into the textbox below, and click Import</p>
+  <textarea ng-model="backupContents" style="width:100%;"></textarea>
+  <button class="btn btn-primary btn-cons m-t-10" ng-click="importBackup()">Import</button>
+  <button ng-click="mode = 'process'" class="btn btn-danger btn-cons m-t-10">Cancel</button>
+</div>

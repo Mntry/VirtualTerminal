@@ -1,0 +1,45 @@
+<h2>Reports: {{selectedOperationName}}</h2>
+<div ng-show="state == 'loading'">
+  Loading reports...
+</div>
+<div ng-show="state !='loading'">
+<select ng-model="selectedOperationName">
+  <option value="">Select a Report</option>
+  <option
+    ng-repeat="report in reports track by report.operationId"
+    ng-show="showReport(report, selectedOperationName)"
+    value="{{report.operationId}}" >
+    {{report.operationId}}
+  </option>
+</select>
+<hr/>
+<form ng-submit="getReportData()"  >
+  <div ng-repeat="field in selectedOperation.parameters" style="text-align:right; width:350px">
+    <div>
+      <label>{{field.formattedName}}</label>
+      <input type="text" ng-model="field.value" ng-show="field.options.length == 0"
+      placeholder="{{field.placeholder}}"> </input>
+      <select ng-show="field.options.length > 0" ng-model="field.value">
+        <option value="0"></option>
+        <option ng-repeat="item in field.options" value="{{item.value}}">item.text</option>
+      </select>
+    </div>
+  </div>
+  <button ng-submit="getReportData()">Refresh</button>
+</form>
+<hr/>
+<table ng-show="reportData.length > 0" style="width:95%;text-align:left;">
+  <thead>
+    <tr>
+      <th ng-repeat="header in reportHeaders">
+        {{header}}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="item in reportData">
+      <td ng-repeat="(key, value) in item">{{value}}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
