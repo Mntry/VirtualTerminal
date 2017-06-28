@@ -1,0 +1,78 @@
+/*
+
+* Override Pages default styles or create your own styles here
+
+*/
+.test {}
+/* simple css for hiding angularjs stuff while loading*/
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+/* Overrides */
+
+.page-container {
+  padding-left: 0;
+}
+
+.btn-default.active, .btn-default:active, .btn-default.active:focus, .btn-default:active:focus, .btn-default:active:hover{
+  background-color: #fff!important;
+}
+.btn-default.active a, .btn-default:active a, .btn-default.active:focus a, .btn-default:active:focus a, .btn-default:active:hover a {
+  color: #232d32;
+}
+.btn-default, .btn-default:focus {
+  background-color: transparent;
+  border:0px;
+}
+.btn-default:hover, .btn-default.active:hover {
+  border:0px;
+}
+.btn-tab {
+  width:20%;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.btn-tab a {
+  width:100%;
+  display:block;
+  padding-top:5px;
+  padding-bottom:5px;
+  color: #91a3ad;
+  font-family: 'Montserrat';
+  text-transform: uppercase;
+  font-size: 11px;
+}
+.btn.btn-tab {
+  padding:0;
+}
+.btn-group .btn+.btn {
+  margin-left:0;
+}
+.alert-ul {
+  padding:0;
+  margin:0;
+}
+.alert .close {
+  background: url("../../assets/img/icons/noti-cross.png") no-repeat scroll 0 0 transparent;
+  top:7px;
+}
+li {
+  list-style: none;
+}
+.table.table-condensed.history-table tbody tr td {
+  padding-top:5px;
+  padding-bottom:5px;
+}
+#detailedTable_wrapper input {
+  width: 80px;
+}
+#detailedTable_wrapper th {
+  padding:10px;
+}
+#detailedTable_wrapper .input-group-addon i {
+  top:-1px;
+}
+.table.table-condensed.table-detailed > tbody > tr > td:last-child:before {
+  display: none!important;
+}

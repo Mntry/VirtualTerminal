@@ -1,0 +1,19 @@
+<h4>Configuration</h4>
+<form ng-submit="saveConfig(url, secret)">
+  <p>
+    Please enter your merchant secret to run transactions
+  </p>
+<div>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="form-group form-group-default">
+      <label>Merchant Secret</label>
+      <input type="password" ng-model="secret" placeholder="##############" class="form-control" required>
+    </div>
+  </div>
+</div>
+<p><label>API URL:</label> <span ng-bind="url"> </span></p>
+<p><label>RPT URL:</label> <span ng-bind="reportingUrl"> </span></p>
+  <button ng-submit="saveConfig(url, secret)" class="btn btn-primary btn-blockyou m-t-10">Save</button>
+</div>
+</form>
