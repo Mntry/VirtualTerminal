@@ -35,6 +35,7 @@ app.service('$pay', ['$http', '$rootScope', function($http, $rootScope){
 		 'Content-Type': 'application/json'
 	 };
 	this.processCredit = function (payload, callback, suppressNotification){
+		headers.Authorization = $rootScope.config.secret;
 		$http({
 			method: 'POST',
 			url: $rootScope.config.url + 'credit/sale/',
@@ -45,6 +46,7 @@ app.service('$pay', ['$http', '$rootScope', function($http, $rootScope){
 
 	};
 	this.authCheck = function(payload, callback, suppressNotification){
+		headers.Authorization = $rootScope.config.secret;
 		$http({
 			method: 'POST',
 			url: $rootScope.config.url + 'credit/authonly',

@@ -4,15 +4,27 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
      'Authorization': $rootScope.config.secret,
      'Content-Type': 'application/json'
   };
+  var groupsLoaded = false;
   var groups = [];
-  $http({
-    method: 'GET',
-    url: $rootScope.config.reportingUrl +  '/V1/Groups',
-    headers: headers
-  }).then(function(response){groups = response.data;},
+  var $rpt = this;
+  this.loadGroups = function(callback){
+    if(groupsLoaded){
+      callback(groups);
+    }
+    headers.Authorization = $rootScope.config.secret;
+    $http({
+      method: 'GET',
+      url: $rootScope.config.reportingUrl +  '/V1/Groups',
+      headers: headers
+    }).then(function(response){
+      groups = response.data;
+      this.groupsLoaded = true;
+      callback(groups);
+    },
     function(reponse) {
-      $rootScope.showError('could not load available groups. Try again later');
+        $rootScope.showError('could not load available groups. Try again later');
     });
+  };
   this.loadReports = function(callback){
     $http({
         method: 'GET',
@@ -27,7 +39,18 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
            rpt.parameters = rpt.parameters||[];
            rpts.push(rpt);
         }
-        callback(rpts);
+        $rpt.loadGroups(function(groups){
+          var options = groups.map(function(g){return {value:g.GroupId, text:g.Group};});
+          for(var i = 0; i<rpts.length;i++){
+            for(var j = 0; j<rpts[i].parameters.length;j++){
+              var grpParam = rpts[i].parameters[j];
+              if(grpParam.needsGroups){
+                grpParam.options = options;
+              }
+            }
+          }
+          callback(rpts);
+        });
       },
       function(response){
         $rootScope.showError('could not load available reports. Try again later');
@@ -55,7 +78,7 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
       if(p.name == 'id'){
         if (rpt.path.indexOf("Groups/{id}") != -1){
           p.formattedName = "Group " + p.formattedName;
-          p.options = groups.map(function(g){return {value:g.GroupId, text:g.Group};});
+          p.needsGroups = true;
         }
       }
     }
@@ -88,6 +111,7 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
       }
       return result;
     };
+    headers.Authorization = $rootScope.config.secret;
     $http({
       method:'GET',
       url: $rootScope.config.reportingUrl + path,

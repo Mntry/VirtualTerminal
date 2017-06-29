@@ -60,6 +60,7 @@ app.service('$sv',['$http', '$rootScope', function($http, $rootScope) {
     if (!validatePayload(payload)){
       return;
     }
+    headers.Authorization = $rootScope.config.secret;
     $http({
       method: 'POST',
       url: $rootScope.config.url + 'storedvalue/sale',
@@ -71,6 +72,7 @@ app.service('$sv',['$http', '$rootScope', function($http, $rootScope) {
     if (!validatePayload(payload)){
       return;
     }
+    headers.Authorization = $rootScope.config.secret;
     $http({
       method: 'POST',
       url: $rootScope.config.url + 'storedvalue/load',
@@ -82,6 +84,7 @@ app.service('$sv',['$http', '$rootScope', function($http, $rootScope) {
     if (!validatePayload(payload, false)){
       return;
     }
+    headers.Authorization = $rootScope.config.secret;
     $http({
       method: 'POST',
       url: $rootScope.config.url + 'storedvalue/balance',
@@ -90,6 +93,7 @@ app.service('$sv',['$http', '$rootScope', function($http, $rootScope) {
     }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
   }
   this.void = function(refNo, callback){
+    headers.Authorization = $rootScope.config.secret;
     $http({
       method: 'POST',
       url: $rootScope.config.url + 'storedvalue/sale/'+refNo+'/void',

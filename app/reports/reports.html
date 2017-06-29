@@ -20,8 +20,8 @@
       <input type="text" ng-model="field.value" ng-show="field.options.length == 0"
       placeholder="{{field.placeholder}}"> </input>
       <select ng-show="field.options.length > 0" ng-model="field.value">
-        <option value="0"></option>
-        <option ng-repeat="item in field.options" value="{{item.value}}">item.text</option>
+        <option value="">-Select-</option>
+        <option ng-repeat="item in field.options" value="{{item.value}}">{{item.text}}</option>
       </select>
     </div>
   </div>
