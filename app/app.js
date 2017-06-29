@@ -25,17 +25,41 @@ app.service('$localStorage', function(){
 	}
 });
 
-app.config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+app.config(['$locationProvider',  '$routeProvider', function($locationProvider,  $routeProvider ) {
 	$locationProvider.hashPrefix('!');
 	$routeProvider.otherwise({redirectTo: '/configure'});
 }]);
 
-app.controller("NotificationCtrl", ['$rootScope', function($rootScope){
-	$rootScope.notifications = [];;
+app.controller("NotificationCtrl", ['$rootScope', '$timeout', function($rootScope, $timeout){
+	$rootScope.notifications = [];
+	$rootScope.showSuccess = function(message){
+		var note = {
+			class: 'alert-success',
+			message: message
+		};
+		$rootScope.notifications.unshift(note);
+		$timeout(function(){
+			$rootScope.closeNotification(note);
+		}, 10000);
+	};
+	$rootScope.showError = function(message){
+		var note = {
+			class: 'alert-danger',
+			message: message
+		};
+		$rootScope.notifications.unshift(note);
+	};
+	$rootScope.closeAll = function(){
+		$rootScope.notifications = [];
+	};
 	$rootScope.closeNotification = function(item){
 		var index = $rootScope.notifications.indexOf(item);
 		$rootScope.notifications.splice(index, 1);
 	};
+
+	$rootScope.$on('$locationChangeSuccess', function() {
+		$rootScope.closeAll();
+	});
 }]);
 app.controller("TabCtrl", ['$scope', '$location', function($scope, $location){
 	$scope.tab = $location.path();

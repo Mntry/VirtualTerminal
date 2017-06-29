@@ -51,11 +51,11 @@
     <button ng-click="mode='process'" class="btn btn-danger btn-cons m-t-10">Cancel</button>
   </form>
   <div ng-show="mode == 'process'" ng-disabled="processing">
-    <p>
-      <small>
-        Run a recurring transaction on multiple saved payment accounts
-      </small>
-    </p>
+    <div class="panel-heading">
+      <div class="panel-title">
+        Run batch recurring transactions
+      </div>
+    </div>
     <p>
       Click "Process" to run a payment from all cards displayed in the "Accounts" section below.
     </p>
@@ -97,7 +97,7 @@
             </tr>
             <tr ng-show="r.showHistory" class="row-details" ng-click="r.showHistory = !(r.showHistory);">
               <td colspan="3">
-                <h5>History: {{r.account}}</h5>
+                <h5>History for card: {{r.account}}</h5>
                 <table class="table table-inline history-table">
                   <tr ng-repeat="h in r.history">
                     <td>{{h.amount}}</td>

@@ -13,20 +13,30 @@ angular.module('myApp.configure', ['ngRoute'])
 function($rootScope, $scope, $localStorage) {
     $scope.url = $rootScope.config.url;
     $scope.secret = $rootScope.config.secret;
-    $scope.$watch('secret',function(oldValue, newValue){
-      if (newValue.startsWith('local')){
+    $scope.secretType = 'password';
+    var setUrls = function(secret){
+      secret = secret||'';
+      if (secret.startsWith('local')){
         $scope.url = 'http://localhost:7003/v1/';
         $scope.reportingUrl = "http://localhost:24052";
-      }else if (newValue.startsWith('test')){
-        $scope.url = 'https://pay-test.monetary.co/v1/'
+      }else if (secret.startsWith('test')){
+        $scope.url = 'https://pay-test.monetary.co/v1/';
         $scope.reportingUrl = "https://reporting-test.monetary.co";
-      }else if (newValue.startsWith('cert')){
-        $scope.url = 'https://pay-cert.monetary.co/v1/'
+      }else if (secret.startsWith('cert')){
+        $scope.url = 'https://pay-cert.monetary.co/v1/';
         $scope.reportingUrl = "https://reporting-cert.monetary.co";
+      }else if (secret == ''){
+        $scope.url = null;
+        $scope.reportingUrl = null;
+        $rootScope.showError('Cannot save empty ');
       }else{
-        $scope.url = 'https://pay.monetary.co/v1/'
+        $scope.url = 'https://pay.monetary.co/v1/';
         $scope.reportingUrl = "https://reporting.monetary.co";
       }
+
+    };
+    $scope.$watch('secret',function(newValue, oldValue, scope){
+        setUrls(newValue);
     })
     $scope.saveConfig = function(){
       var config = {
@@ -36,6 +46,6 @@ function($rootScope, $scope, $localStorage) {
       };
       $rootScope.config = config;
       $localStorage.save('config', config);
-      $rootScope.notifications.unshift({class:"success", message:"Saved Configuration"});
+      $rootScope.showSuccess("Saved Configuration");
     };
 }]);

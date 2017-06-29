@@ -1,4 +1,9 @@
 <h4>Configuration</h4>
+<div class="panel-heading">
+  <div class="panel-title">
+    Enable your virtual terminal
+  </div>
+</div>
 <form ng-submit="saveConfig(url, secret)">
   <p>
     Please enter your merchant secret to run transactions
@@ -8,7 +13,7 @@
   <div class="col-sm-12">
     <div class="form-group form-group-default">
       <label>Merchant Secret</label>
-      <input type="password" ng-model="secret" placeholder="##############" class="form-control" required>
+      <input type="{{secretType}}" ng-model="secret" placeholder="##############" class="form-control"  required>
     </div>
   </div>
 </div>

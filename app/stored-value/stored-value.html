@@ -1,41 +1,50 @@
 
-<h1>Stored Value</h1>
-<div>
-<div ng-show="!$root.config.url">cannot use stored value until configured</div>
-<div class="bbtn-group btn-group-justified">
-  <a class="btn btn-complete" ng-click="op = 'Sale'" ng-class="{active:op=='Sale'}">Sale</a>
-  <a class="btn btn-complete" ng-click="op = 'Load'" ng-class="{active:op=='Load'}">Load</a>
-  <a class="btn btn-complete" ng-click="op = 'Balance'" ng-class="{active:op=='Balance'}">Balance</a>
+<h4>Gift Card</h4>
+<div class="panel-heading">
+  <div class="panel-title">
+    Run transactions, load value, and check balances
+  </div>
 </div>
-<form ng-show="$root.config.url" ng-submit="submitTransaction()">
-  <div class="row">
+<p>
+  Select a gift card process, enter card data and "Process" below.
+</p>
+
+<div>
+  <div ng-show="!$root.config.url">cannot use stored value until configured</div>
+  <div class="bbtn-group btn-group-justified m-b-20">
+    <a class="btn btn-sm btn-complete" ng-click="op = 'Sale'" ng-class="{active:op=='Sale'}">Sale</a>
+    <a class="btn btn-sm btn-complete" ng-click="op = 'Load'" ng-class="{active:op=='Load'}">Load</a>
+    <a class="btn btn-sm btn-complete" ng-click="op = 'Balance'" ng-class="{active:op=='Balance'}">Balance</a>
+  </div>
+  <form ng-show="$root.config.url" ng-submit="submitTransaction()">
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="form-group form-group-default input-group" ng-class="{disabled:op=='Balance'}">
+          <span class="input-group-addon">
+            <i class="fa fa-dollar"></i>
+          </span>
+      <label>Amount</label>
+      <input class="form-control" type="text" ng-model="amount" placeholder="0.00" ng-disabled="op == 'Balance'" required></input>
+      </div>
+    </div>
     <div class="col-sm-4">
-      <div class="form-group form-group-default input-group" ng-class="{disabled:op=='Balance'}">
-        <span class="input-group-addon">
-          <i class="fa fa-dollar"></i>
-        </span>
-    <label>Amount</label>
-    <input class="form-control" type="text" ng-model="amount" placeholder="0.00" ng-disabled="op == 'Balance'" required></input>
+      <div class="form-group form-group-default">
+        <label>Account</label>
+        <input class="form-control" type="text" ng-model="account"></input>
+      </div>
     </div>
-  </div>
-  <div class="col-sm-4">
-    <div class="form-group form-group-default">
-      <label>Account</label>
-      <input class="form-control" type="text" ng-model="account"></input>
+    <div class="col-sm-4">
+      <div class="form-group form-group-default">
+      <label>CVV</label>
+      <input class="form-control" type="text" ng-model="cvv"></input>
+      </div>
     </div>
-  </div>
-  <div class="col-sm-4">
-    <div class="form-group form-group-default">
-    <label>CVV</label>
-    <input class="form-control" type="text" ng-model="cvv"></input>
-    </div>
-  </div>
-  <button ng-submit="submitTransaction()" class="btn btn-primary">Process {{op}}</button>
-</form>
+    <button ng-submit="submitTransaction()" class="btn btn-block btn-primary">Process {{op}}</button>
+  </form>
 </div>
 <div ng-show="responses.length > 0">
   <hr/>
-  <h2>Responses</h2>
+  <h5>Responses</h5>
   <table style="width:100%;text-align:left;">
     <thead>
       <tr>

@@ -4,12 +4,9 @@ app.service('$pay', ['$http', '$rootScope', function($http, $rootScope){
 		return function(response){
 			if(!suppressNotification)
 			{
-				$rootScope.notifications.unshift({
-					class: "alert-success",
-					message: (response.data.Status||"Success")
+				$rootScope.showSuccess((response.data.Status||"Success")
 									+ " (" + (response.data.Account|| "NoAccount") + ")"
-									+ ":" + response.data.Message
-				});
+									+ ":" + response.data.Message);
 			}
 			if(callback)
 			{
@@ -25,10 +22,7 @@ app.service('$pay', ['$http', '$rootScope', function($http, $rootScope){
 			if(!suppressNotification)
 			{
 
-				$rootScope.notifications.unshift({
-					class: "alert-danger",
-					message: formattedMsg
-				});
+				$rootScope.showError(formattedMsg);
 			}
 			if(callback)
 			{

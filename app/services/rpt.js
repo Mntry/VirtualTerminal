@@ -11,10 +11,7 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
     headers: headers
   }).then(function(response){groups = response.data;},
     function(reponse) {
-      $rootScope.notifications.unshift({
-        class:'alert alert-danger',
-        message: 'could not load available groups. Try again later'
-      });
+      $rootScope.showError('could not load available groups. Try again later');
     });
   this.loadReports = function(callback){
     $http({
@@ -33,11 +30,8 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
         callback(rpts);
       },
       function(response){
-        $rootScope.notifications.unshift({
-          class:'alert alert-danger',
-          message: 'could not load available reports. Try again later'
-        });
-    });
+        $rootScope.showError('could not load available reports. Try again later');
+      });
   };
   var formatFields = function(rpt){
     var today = new Date();
@@ -103,10 +97,7 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
       var headers = buildHeaders(response.data);
       callback(headers, response.data);
       if(response.data.length == 0){
-        $rootScope.notifications.unshift({
-          class:'alert-success',
-          message: "no data returned"
-        });
+        $rootScope.showSuccess("no data returned");
       }
 
     }, function(response){
@@ -114,10 +105,7 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
       if (response.status == 400){
         msg = response.data.Status + ":" + response.data.Message;
       }
-      $rootScope.notifications.unshift({
-        class:'alert alert-danger',
-        message: msg
-      });
+      $rootScope.showError(msg);
     });
 
 
