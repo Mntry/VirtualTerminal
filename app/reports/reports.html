@@ -14,18 +14,20 @@
 </select>
 <hr/>
 <form ng-submit="getReportData()"  >
-  <div ng-repeat="field in selectedOperation.parameters" style="text-align:right; width:350px">
-    <div>
-      <label>{{field.formattedName}}</label>
-      <input type="text" ng-model="field.value" ng-show="field.options.length == 0"
-      placeholder="{{field.placeholder}}"> </input>
-      <select ng-show="field.options.length > 0" ng-model="field.value">
-        <option value="">-Select-</option>
-        <option ng-repeat="item in field.options" value="{{item.value}}">{{item.text}}</option>
-      </select>
+  <div class="row">
+    <div ng-repeat="field in selectedOperation.parameters" class="col-sm-6">
+      <div class="form-group form-group-default">
+        <label>{{field.formattedName}}</label>
+        <input type="text" ng-model="field.value" ng-show="field.options.length == 0"
+        placeholder="{{field.placeholder}}" class="form-control"> </input>
+        <select ng-show="field.options.length > 0" ng-model="field.value">
+          <option value="">-Select-</option>
+          <option ng-repeat="item in field.options" value="{{item.value}}">{{item.text}}</option>
+        </select>
+      </div>
     </div>
-  </div>
-  <button ng-submit="getReportData()">Refresh</button>
+</div>
+  <button ng-submit="getReportData()" class="btn btn-primary btn-block m-t-10">Refresh</button>
 </form>
 <hr/>
 <table ng-show="reportData.length > 0" style="width:95%;text-align:left;">

@@ -58,13 +58,13 @@
   <div ng-show="responses.length > 0">
   <hr>
   <h5>Responses</h5>
-  <table style="width:100%;text-align:left;">
+  <table class="table table-hover dataTabe no-footer" role="grid">
     <thead>
       <tr>
-        <th>Account(last4)</th>
-        <th>Amount</th>
-        <th>Brand</th>
-        <th>RefNo</th>
+        <th class="sorting_disabled">Account(last4)</th>
+        <th class="sorting_disabled">Amount</th>
+        <th class="sorting_disabled">Brand</th>
+        <th class="sorting_disabled">RefNo</th>
       </tr>
     </thead>
     <tbody>
@@ -76,7 +76,4 @@
       </tr>
     </tbody>
   </table>
-  <div class="m-t-20" ng-repeat="response in responses">
-      <span>{{response|json}}</span>
-  </div>
 </div>
