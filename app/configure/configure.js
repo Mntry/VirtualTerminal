@@ -28,7 +28,7 @@ function($rootScope, $scope, $localStorage) {
       }else if (secret == ''){
         $scope.url = null;
         $scope.reportingUrl = null;
-        $rootScope.showError('Cannot save empty ');
+
       }else{
         $scope.url = 'https://pay.monetary.co/v1/';
         $scope.reportingUrl = "https://reporting.monetary.co";
@@ -39,6 +39,10 @@ function($rootScope, $scope, $localStorage) {
         setUrls(newValue);
     })
     $scope.saveConfig = function(){
+      if($scope.url == null || $scope.secret == ''){
+        $rootScope.showError('Merchant Secret cannot be empty.');
+      }
+
       var config = {
         url: $scope.url,
         reportingUrl: $scope.reportingUrl,
