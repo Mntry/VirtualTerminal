@@ -4,13 +4,14 @@
     Run a single transaction
   </div>
 </div>
-<div ng-show="!$root.config.url">cannot use virtual terminal until configured</div>
+<div ng-hide="$root.config.url">cannot use virtual terminal until configured</div>
   <form ng-submit="requestPayment()" ng-show="$root.config.url" class="m-t-10">
     <div class="row">
       <div class="col-sm-6">
         <div class="btn-group form-group form-group-default">
           <a class="btn btn-complete" ng-click="op = 'Credit'" ng-class="{active:op=='Credit'}">Credit</a>
           <a class="btn btn-complete" ng-click="op = 'Gift'" ng-class="{active:op=='Gift'}">Gift</a>
+          <a class="btn btn-complete" ng-click="op = 'Swipe'" ng-class="{active:op=='Swipe'}">Swipe</a>
         </div>
       </div>
       <div class="col-sm-6">
@@ -23,7 +24,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row" ng-hide="op == 'Swipe'">
       <div class="col-sm-6">
         <div class="form-group form-group-default">
           <label>Card Number</label>
@@ -36,6 +37,13 @@
           <input type="text" placeholder="1231" class="form-control" ng-model="request.Expiration" ng-disabled="op=='Gift'">
         </div>
       </div>
+    </div>
+    <div ng-show="op == 'Swipe'" class="row">
+      <div class="col-sm-12">
+      <div class="form-group form-group-default">
+        <swipeReceiver accesskey="request.AccessKey" encryptedAccount="request.EncryptedAccount"><swipeReceiver>
+      </div>
+    </div>
     </div>
     <div class="row">
       <div class="col-sm-6">
@@ -76,4 +84,6 @@
       </tr>
     </tbody>
   </table>
+</div>
+<div ng-show="op == 'Swipe'">
 </div>

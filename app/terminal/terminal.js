@@ -12,6 +12,7 @@ angular.module('myApp.terminal', ['ngRoute'])
 .controller('TerminalCtrl', ['$scope', '$pay', '$sv',
 function($scope, $pay, $sv) {
   $scope.op = "Credit";
+  $scope.mode = 'process';
   $scope.responses = $scope.responses||[];
   $scope.request = $scope.request||{}; //fields will be added via angular!
   $scope.requestPayment = function(){
