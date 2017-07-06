@@ -15,6 +15,7 @@ app.service('$localStorage', function(){
     var result = self.get('config');
 
     secret = secret||result.secret||'';
+    result.secret = secret;
     if (secret.startsWith('local')){
       result.url = 'http://localhost:7003/v1/';
       result.reportingUrl = "http://localhost:24052";
