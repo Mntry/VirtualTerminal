@@ -100,7 +100,7 @@ app.directive('swipeReceiver', ['$document', '$timeout', function ($document, $t
             }
             var account = track2.substr(0, track2.indexOf("?"));
             if(track2.indexOf("=") != -1){
-              var account = track2.substr(0, track2.indexOf("="));
+              account = track2.substr(0, track2.indexOf("="));
             }
             account = account.replace(";", "");
             if (account == ''){
@@ -130,6 +130,9 @@ app.directive('swipeReceiver', ['$document', '$timeout', function ($document, $t
             if(scope.rawSwipe == ''){
               scope.swipeMessage = "Processing Swipe...";
               $timeout(function() {
+                if(scope.enableSwipe == false){
+                  return; // return char was captured
+                }
                 if(scope.validateSwipe()){
                   scope.parseRawSwipe();
                   return;
@@ -141,8 +144,13 @@ app.directive('swipeReceiver', ['$document', '$timeout', function ($document, $t
 
             event.preventDefault();
             if(event.which == 13) { // On ENTER submit parent form
-              parseRawSwipe();
-              scope.enableSwipe = false;
+              if(scope.validateSwipe()){
+                scope.parseRawSwipe();
+                scope.$apply();
+                return;
+              }
+              scope.clearForm();
+              scope.swipeMessage = "Error trying to swipe. Please try again.";
             } else if(event.which == 27) {
               clearForm();
               scope.enableSwipe = false;
