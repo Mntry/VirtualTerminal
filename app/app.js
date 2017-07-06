@@ -10,20 +10,7 @@ var app = angular.module('myApp', [
 	'myApp.stored-value',
 	'myApp.reports'
 ]);
-app.service('$localStorage', function(){
 
-	this.save = function(key, value){
-		localStorage.setItem(key, JSON.stringify(value));
-	};
-	this.get = function(key){
-		var result = null;
-		var value = localStorage.getItem(key);
-		if(value){
-			result = JSON.parse(value);
-		}
-		return result;
-	}
-});
 
 app.config(['$locationProvider',  '$routeProvider', function($locationProvider,  $routeProvider ) {
 	$locationProvider.hashPrefix('!');
@@ -76,7 +63,7 @@ app.controller("TabCtrl", ['$scope', '$location', function($scope, $location){
 }]);
 
 app.run(function($rootScope, $localStorage){
-
+		$rootScope.showProgress = false;
 		$rootScope.config = $localStorage.get('config');
 		//initializing scope
 		if (!$rootScope.config){

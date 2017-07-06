@@ -48,6 +48,16 @@
 </head>
 <body>
 <!-- START PAGE-CONTAINER -->
+<div ng-show="$root.showProgress" class="in-progress">
+  <div class="in-progress-contents">
+    <h5>Please wait while we process your request</h5>
+    <div class="progress-circle-indeterminate"></div>
+    <input class="progress-circle" ui-jq="circularProgress" value="65" type="hidden" data-color="primary">
+  </div>
+</div>
+<!-- START PAGE-CONTAINER -->
+
+<!-- START PAGE-CONTAINER -->
   <div class="page-container ">
 
 <!--[if lt IE 7]>
@@ -127,9 +137,11 @@
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="app.js"></script>
   <!-- services here -->
+  <script src="services/local-storage.js"></script>
   <script src="services/sv.js"></script>
   <script src="services/pay.js"></script>
   <script src="services/rpt.js"></script>
+  <script src="services/engage.js"></script>
   <!-- directives here -->
   <script src="directives/swipe-receiver.js"></script>
   <!-- views here-->
