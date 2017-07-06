@@ -21,6 +21,7 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
         + " is " + response.data.Balance;
       }
 			$rootScope.showSuccess(msg);
+      $rootScope.showProgress = false;
 			if(callback)
 			{
 				callback({content: response.data, isSuccessful: true});
@@ -33,6 +34,7 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
 							+ " (" + (response.data.Account|| "NoAccount") + ")"
 							+ ":" + response.data.Message;
       $rootScope.showError(formattedMsg);
+      $rootScope.showProgress = false;
 			if(callback)
 			{
 				callback({content: response.data, isSuccessful: false, formattedMsg: formattedMsg});
@@ -60,6 +62,7 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
     if (!validatePayload(payload)){
       return;
     }
+    $rootScope.showProgress = true;
     headers.Authorization = $localStorage.config().secret;
     $http({
       method: 'POST',
@@ -72,6 +75,7 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
     if (!validatePayload(payload)){
       return;
     }
+    $rootScope.showProgress = true;
     headers.Authorization = $localStorage.config().secret;
     $http({
       method: 'POST',
@@ -81,9 +85,11 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
     }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
   };
   this.balance = function(payload, callback){
+
     if (!validatePayload(payload, false)){
       return;
     }
+    $rootScope.showProgress = true;
     headers.Authorization = $localStorage.config().secret;
     $http({
       method: 'POST',
@@ -93,6 +99,7 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
     }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
   }
   this.void = function(refNo, callback){
+    $rootScope.showProgress = true;
     headers.Authorization = $localStorage.config().secret;
     $http({
       method: 'POST',

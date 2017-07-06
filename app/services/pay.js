@@ -7,6 +7,7 @@ app.service('$pay', ['$http', '$rootScope', '$localStorage', function($http, $ro
 									+ " (" + (response.data.Account|| "NoAccount") + ")"
 									+ ":" + response.data.Message);
 			}
+			$rootScope.showProgress = false;
 			if(callback)
 			{
 				callback({content: response.data, isSuccessful: true});
@@ -22,6 +23,7 @@ app.service('$pay', ['$http', '$rootScope', '$localStorage', function($http, $ro
 			{
 				$rootScope.showError(formattedMsg);
 			}
+			$rootScope.showProgress = false;
 			if(callback)
 			{
 				callback({content: response.data, isSuccessful: false, formattedMsg: formattedMsg});
@@ -34,6 +36,7 @@ app.service('$pay', ['$http', '$rootScope', '$localStorage', function($http, $ro
 	 };
 	this.processCredit = function (payload, callback, suppressNotification){
 		headers.Authorization = $localStorage.config().secret;
+		$rootScope.showProgress = true;
 		$http({
 			method: 'POST',
 			url: $localStorage.config().url + 'credit/sale/',
@@ -45,6 +48,7 @@ app.service('$pay', ['$http', '$rootScope', '$localStorage', function($http, $ro
 	};
 	this.authCheck = function(payload, callback, suppressNotification){
 		headers.Authorization = $localStorage.config().secret;
+		$rootScope.showProgress = true;
 		$http({
 			method: 'POST',
 			url: $localStorage.config().url + 'credit/authonly',

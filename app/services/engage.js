@@ -4,6 +4,7 @@ app.service('$engage', ['$http', '$rootScope', '$localStorage', function($http, 
 		return function(response, isSuccessful){
 			if(callback)
 			{
+				$rootScope.showProgress = false;
 				callback({content: response.data, isSuccessful: isSuccessful});
 			}
 		};
@@ -14,6 +15,7 @@ app.service('$engage', ['$http', '$rootScope', '$localStorage', function($http, 
 	 };
 	this.postReciept = function (payload, callback){
 		headers.Authorization = $localStorage.config().secret;
+		$rootScope.showProgress = true;
 		$http({
 			method: 'POST',
 			url: $localStorage.config().engageUrl + 'credit/sale/',
