@@ -18,6 +18,7 @@ function($rootScope, $scope, $localStorage) {
     $scope.secretType = 'password';
     var setUrls = function(secret){
       var config = $localStorage.config(secret);
+      $rootScope.config = config;
       for(var key in config) {
         $scope[key] = config[key];
       }
