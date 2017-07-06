@@ -39,6 +39,12 @@
       <input class="form-control" type="text" ng-model="cvv"></input>
       </div>
     </div>
+    <div class="col-sm-12">
+      <div class="form-group form-group-default">
+        <label>Swipe For Account Details</label>
+        <swipe-receiver account="account" account-key="accountKey" encrypted-account="encryptedAccount" enable-swipe="swipeEnabled" mode="Gift"><swipe-receiver>
+      </div>
+    </div>
     <button ng-submit="submitTransaction()" class="btn btn-block btn-primary">Process {{op}}</button>
   </form>
 </div>

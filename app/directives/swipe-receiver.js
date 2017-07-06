@@ -10,7 +10,7 @@ app.directive('swipeReceiver', ['$document', '$timeout', function ($document, $t
         restrict: 'E',
         replace: true,
         template: '<div><a ng-hide="enableSwipe" class="btn btn-primary" ng-click="enableSwipe=true" title="Click here to scan a card"><span><i class="fa fa-credit-card"></i> {{swipeMessage}}</span></a>'
-                + '<span ng-show="enableSwipe"><i class="fa fa-credit-card"></i>{{swipeMessage}}</span></div>',
+                + '<span ng-show="enableSwipe"><i class="fa fa-credit-card"></i> {{swipeMessage}}</span></div>',
         link: function(scope, element, attrs) {
           scope.clearForm = function(){
             scope.accountKey = "";
@@ -103,6 +103,11 @@ app.directive('swipeReceiver', ['$document', '$timeout', function ($document, $t
               var account = track2.substr(0, track2.indexOf("="));
             }
             account = account.replace(";", "");
+            if (account == ''){
+              scope.clearForm();
+              scope.swipeMessage = "Failed to read the card correctly. Please try agian.";
+              return;
+            }
             scope.account = account;
             scope.enableSwipe = false;
           };
