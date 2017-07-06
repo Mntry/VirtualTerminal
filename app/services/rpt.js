@@ -34,6 +34,10 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
         rpts = [];
         for(path in response.data.paths){
            var rpt = response.data.paths[path].get;
+           if(rpt.schemes && rpt.schemes.indexOf("Utility") != -1){
+             continue; // utility endpoints do not need to be listed
+           }
+           rpt.operationId = rpt.operationId.replace(/\_/g, " ");
            rpt.path = path;
            formatFields(rpt);
            rpt.parameters = rpt.parameters||[];

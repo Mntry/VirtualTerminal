@@ -25,11 +25,16 @@ function($scope, $sv) {
         if(response.isSuccessful){
           var result = response.content;
           result.Operation = op;
+          result.Voided = false;
           if(op == 'Balance'){
             result.Amount = result.Balance;
           }
-          result.Voided = false;
-          $scope.responses.unshift(result);
+          else{
+            $scope.account = '';
+            $scope.cvv = '';
+            $scope.responses.unshift(result);
+          }
+          $scope.amount = '';
         }
       });
     };

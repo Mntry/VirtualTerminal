@@ -9,11 +9,20 @@
     <div class="row">
       <div class="col-sm-6">
         <div class="btn-group form-group form-group-default">
+          <label>Sale Type</label>
           <a class="btn btn-complete" ng-click="op = 'Credit'" ng-class="{active:op=='Credit'}">Credit</a>
           <a class="btn btn-complete" ng-click="op = 'Gift'" ng-class="{active:op=='Gift'}">Gift</a>
-          <a class="btn btn-complete" ng-click="op = 'Swipe'" ng-class="{active:op=='Swipe'}">Swipe</a>
         </div>
       </div>
+      <div class="col-sm-6">
+        <div class="btn-group form-group form-group-default">
+          <label>Entry Mode</label>
+          <a class="btn btn-complete" ng-click="mode = 'Manual'" ng-class="{active:mode=='Manual'}">Manual</a>
+          <a class="btn btn-complete" ng-click="mode = 'Swipe'" ng-class="{active:mode=='Swipe'}">Swipe</a>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-sm-6">
         <div class="form-group form-group-default input-group">
           <span class="input-group-addon">
@@ -24,7 +33,7 @@
         </div>
       </div>
     </div>
-    <div class="row" ng-hide="op == 'Swipe'">
+    <div class="row" ng-hide="mode == 'Swipe'">
       <div class="col-sm-6">
         <div class="form-group form-group-default">
           <label>Card Number</label>
@@ -38,10 +47,11 @@
         </div>
       </div>
     </div>
-    <div ng-show="op == 'Swipe'" class="row">
+    <div ng-show="mode == 'Swipe'" class="row">
       <div class="col-sm-12">
       <div class="form-group form-group-default">
-        <swipeReceiver accesskey="request.AccessKey" encryptedAccount="request.EncryptedAccount"><swipeReceiver>
+        <label>Account Details</label>
+        <swipe-receiver account="request.Account" account-key="request.AccountKey" encrypted-account="request.EncryptedAccount" enable-swipe="swipeEnabled" mode="op"><swipe-receiver>
       </div>
     </div>
     </div>

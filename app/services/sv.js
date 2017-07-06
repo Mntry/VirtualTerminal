@@ -49,10 +49,6 @@ app.service('$sv',['$http', '$rootScope', function($http, $rootScope) {
       $rootScope.showError('invalid account');
       isValid = false;
     }
-    if(!payload.CVV || payload.CVV.trim() == ''){
-      $rootScope.showError('invalid CVV');
-      isValid = false;
-    }
     return isValid;
   };
 
