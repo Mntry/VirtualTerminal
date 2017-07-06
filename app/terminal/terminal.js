@@ -25,6 +25,7 @@ function($scope, $pay, $sv) {
     if($scope.op == "Credit"){
       if($scope.request.Account && $scope.request.Account.indexOf("*") != -1){
         delete $scope.request.Account;
+        delete $scope.request.Expiration;
       }
       $pay.processCredit(msg, function(response){
         if (response.isSuccessful){

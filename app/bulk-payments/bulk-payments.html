@@ -20,16 +20,27 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-6">
+      <div class="col-sm-6" ng-hide="request.EncryptedAccount">
         <div class="form-group form-group-default">
           <label>Card Number</label>
           <input type="text" placeholder="0000000000000000" class="form-control" ng-model="request.Account" name="account" required>
         </div>
       </div>
-      <div class="col-sm-6">
+      <div class="col-sm-6" ng-hide="request.EncryptedAccount">
         <div class="form-group form-group-default">
           <label>Expiration Date</label>
           <input type="text" placeholder="1231" class="form-control" ng-model="request.Expiration" name="expiriation" required>
+        </div>
+      </div>
+      <div class="col-sm-12" ng-show="request.EncryptedAccount">
+        <div class="form-group form-group-default">
+          <a class="btn btn-primary" ng-click="request.EncryptedAccount = null;request.AccountKey = null;swipeEnabled=true;request.Account = '';">Enter Manually</a>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group form-group-default">
+          <label>Swipe For Account Details</label>
+          <swipe-receiver account="request.Account" account-key="request.AccountKey" encrypted-account="request.EncryptedAccount" enable-swipe="swipeEnabled" mode="swiperMode"><swipe-receiver>
         </div>
       </div>
     </div>

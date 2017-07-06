@@ -22,12 +22,21 @@ function($rootScope, $scope, $localStorage, $pay) {
 	$scope.hasChanges = false;
 	$scope.processing = false;
 	$scope.backupContents = '';
+	$scope.swiperMode = 'Credit';
+	$scope.swipeEnabled = true;
 	$scope.authAndAddCard = function (){
 		if($scope.mode == 'process'){
 			return; //user clicked cancel
 		}
 		var authData = $scope.request;
 		authData.Amount = 0.00;
+		if(authData.EncryptedAccount){
+			delete authData.Account;
+			delete authData.Expiration;
+		}else {
+			delete authData.EncryptedAccount;
+			delete authData.AccountKey;
+		}
 		var reccuringAmount = $scope.reccuringAmount;
 		var alias = $scope.alias;
 		$pay.authCheck(authData, function(response){
