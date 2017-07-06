@@ -14,7 +14,7 @@
   <div class="bbtn-group btn-group-justified m-b-20">
     <a class="btn btn-sm btn-complete" ng-click="op = 'Sale'" ng-class="{active:op=='Sale'}">Sale</a>
     <a class="btn btn-sm btn-complete" ng-click="op = 'Load'" ng-class="{active:op=='Load'}">Load</a>
-    <a class="btn btn-sm btn-complete" ng-click="op = 'Balance'" ng-class="{active:op=='Balance'}">Balance</a>
+    <a class="btn btn-sm btn-complete" ng-click="op = 'Balance'; amount = ''" ng-class="{active:op=='Balance'}">Balance</a>
   </div>
   <form ng-show="$root.config.url" ng-submit="submitTransaction()">
     <div class="row">
@@ -37,6 +37,12 @@
       <div class="form-group form-group-default">
       <label>CVV</label>
       <input class="form-control" type="text" ng-model="cvv"></input>
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <div class="form-group form-group-default">
+        <label>Swipe For Account Details</label>
+        <swipe-receiver account="account" account-key="accountKey" encrypted-account="encryptedAccount" enable-swipe="swipeEnabled" mode="swiperMode"><swipe-receiver>
       </div>
     </div>
     <button ng-submit="submitTransaction()" class="btn btn-block btn-primary">Process {{op}}</button>

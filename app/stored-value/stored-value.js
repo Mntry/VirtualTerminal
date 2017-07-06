@@ -13,6 +13,8 @@ angular.module('myApp.stored-value', ['ngRoute'])
 function($scope, $sv) {
     $scope.op = "Sale";
     $scope.responses =[];
+    $scope.swipeEnabled = true;
+    $scope.swiperMode = 'Gift';
     var r = sessionStorage.getItem('svResponses');
     if(r){
       $scope.responses = JSON.parse(r);
@@ -25,11 +27,17 @@ function($scope, $sv) {
         if(response.isSuccessful){
           var result = response.content;
           result.Operation = op;
+          result.Voided = false;
           if(op == 'Balance'){
             result.Amount = result.Balance;
           }
-          result.Voided = false;
-          $scope.responses.unshift(result);
+          else{
+            $scope.account = '';
+            $scope.cvv = '';
+            $scope.swipeEnabled = true;
+            $scope.responses.unshift(result);
+          }
+          $scope.amount = '';
         }
       });
     };

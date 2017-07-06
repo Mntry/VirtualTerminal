@@ -15,7 +15,11 @@ app.service('$sv',['$http', '$rootScope', function($http, $rootScope) {
       response.data.guid = createGuid();
       var msg = (response.data.Status||"Success")
 								+ " (" + (response.data.Account|| "NoAccount") + ")"
-								+ ":" + response.data.Message;
+								+ ": " + response.data.Message;
+      if(!response.data.Amount){
+        msg = "Current Balance for " + response.data.Account
+        + " is " + response.data.Balance;
+      }
 			$rootScope.showSuccess(msg);
 			if(callback)
 			{
@@ -47,10 +51,6 @@ app.service('$sv',['$http', '$rootScope', function($http, $rootScope) {
     }
     if(!payload.Account || payload.Account.trim() == ''){
       $rootScope.showError('invalid account');
-      isValid = false;
-    }
-    if(!payload.CVV || payload.CVV.trim() == ''){
-      $rootScope.showError('invalid CVV');
       isValid = false;
     }
     return isValid;

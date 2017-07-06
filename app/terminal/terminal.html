@@ -4,15 +4,25 @@
     Run a single transaction
   </div>
 </div>
-<div ng-show="!$root.config.url">cannot use virtual terminal until configured</div>
+<div ng-hide="$root.config.url">cannot use virtual terminal until configured</div>
   <form ng-submit="requestPayment()" ng-show="$root.config.url" class="m-t-10">
     <div class="row">
       <div class="col-sm-6">
         <div class="btn-group form-group form-group-default">
+          <label>Sale Type</label>
           <a class="btn btn-complete" ng-click="op = 'Credit'" ng-class="{active:op=='Credit'}">Credit</a>
           <a class="btn btn-complete" ng-click="op = 'Gift'" ng-class="{active:op=='Gift'}">Gift</a>
         </div>
       </div>
+      <div class="col-sm-6">
+        <div class="btn-group form-group form-group-default">
+          <label>Entry Mode</label>
+          <a class="btn btn-complete" ng-click="mode = 'Manual'" ng-class="{active:mode=='Manual'}">Manual</a>
+          <a class="btn btn-complete" ng-click="mode = 'Swipe'" ng-class="{active:mode=='Swipe'}">Swipe</a>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-sm-6">
         <div class="form-group form-group-default input-group">
           <span class="input-group-addon">
@@ -23,7 +33,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row" ng-hide="mode == 'Swipe'">
       <div class="col-sm-6">
         <div class="form-group form-group-default">
           <label>Card Number</label>
@@ -36,6 +46,14 @@
           <input type="text" placeholder="1231" class="form-control" ng-model="request.Expiration" ng-disabled="op=='Gift'">
         </div>
       </div>
+    </div>
+    <div ng-show="mode == 'Swipe'" class="row">
+      <div class="col-sm-12">
+      <div class="form-group form-group-default">
+        <label>Account Details</label>
+        <swipe-receiver account="request.Account" account-key="request.AccountKey" encrypted-account="request.EncryptedAccount" enable-swipe="swipeEnabled" mode="op"><swipe-receiver>
+      </div>
+    </div>
     </div>
     <div class="row">
       <div class="col-sm-6">
@@ -76,4 +94,6 @@
       </tr>
     </tbody>
   </table>
+</div>
+<div ng-show="op == 'Swipe'">
 </div>
