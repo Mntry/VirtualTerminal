@@ -1,7 +1,7 @@
-app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
+app.service('$rpt',['$http', '$rootScope', '$localStorage', function($http, $rootScope, $localStorage) {
   var rpts = [];
   var headers = {
-     'Authorization': $rootScope.config.secret,
+     'Authorization': $localStorage.config().secret,
      'Content-Type': 'application/json'
   };
   var groupsLoaded = false;
@@ -11,10 +11,10 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
     if(groupsLoaded){
       callback(groups);
     }
-    headers.Authorization = $rootScope.config.secret;
+    headers.Authorization = $localStorage.config().secret;
     $http({
       method: 'GET',
-      url: $rootScope.config.reportingUrl +  '/V1/Groups',
+      url: $localStorage.config().reportingUrl +  '/V1/Groups',
       headers: headers
     }).then(function(response){
       groups = response.data;
@@ -28,7 +28,7 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
   this.loadReports = function(callback){
     $http({
         method: 'GET',
-        url: $rootScope.config.reportingUrl + '/swagger/docs/V1'
+        url: $localStorage.config().reportingUrl + '/swagger/docs/V1'
     }).then(
       function(response){
         rpts = [];
@@ -115,10 +115,10 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
       }
       return result;
     };
-    headers.Authorization = $rootScope.config.secret;
+    headers.Authorization = $localStorage.config().secret;
     $http({
       method:'GET',
-      url: $rootScope.config.reportingUrl + path,
+      url: $localStorage.config().reportingUrl + path,
       body: body,
       headers: headers
     }).then(function(response){

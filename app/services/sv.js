@@ -1,6 +1,6 @@
-app.service('$sv',['$http', '$rootScope', function($http, $rootScope) {
+app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $rootScope, $localStorage) {
   var headers = {
-     'Authorization': $rootScope.config.secret,
+     'Authorization': $localStorage.config().secret,
      'Content-Type': 'application/json'
   };
   var createGuid = function()
@@ -60,10 +60,10 @@ app.service('$sv',['$http', '$rootScope', function($http, $rootScope) {
     if (!validatePayload(payload)){
       return;
     }
-    headers.Authorization = $rootScope.config.secret;
+    headers.Authorization = $localStorage.config().secret;
     $http({
       method: 'POST',
-      url: $rootScope.config.url + 'storedvalue/sale',
+      url: $localStorage.config().url + 'storedvalue/sale',
       data: JSON.stringify(payload),
       headers: headers
     }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
@@ -72,10 +72,10 @@ app.service('$sv',['$http', '$rootScope', function($http, $rootScope) {
     if (!validatePayload(payload)){
       return;
     }
-    headers.Authorization = $rootScope.config.secret;
+    headers.Authorization = $localStorage.config().secret;
     $http({
       method: 'POST',
-      url: $rootScope.config.url + 'storedvalue/load',
+      url: $localStorage.config().url + 'storedvalue/load',
       data: JSON.stringify(payload),
       headers: headers
     }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
@@ -84,19 +84,19 @@ app.service('$sv',['$http', '$rootScope', function($http, $rootScope) {
     if (!validatePayload(payload, false)){
       return;
     }
-    headers.Authorization = $rootScope.config.secret;
+    headers.Authorization = $localStorage.config().secret;
     $http({
       method: 'POST',
-      url: $rootScope.config.url + 'storedvalue/balance',
+      url: $localStorage.config().url + 'storedvalue/balance',
       data: JSON.stringify(payload),
       headers: headers
     }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
   }
   this.void = function(refNo, callback){
-    headers.Authorization = $rootScope.config.secret;
+    headers.Authorization = $localStorage.config().secret;
     $http({
       method: 'POST',
-      url: $rootScope.config.url + 'storedvalue/sale/'+refNo+'/void',
+      url: $localStorage.config().url + 'storedvalue/sale/'+refNo+'/void',
       headers: headers
     }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
   };
