@@ -11,11 +11,16 @@ app.service('$localStorage', function(){
 		}
 		return result;
 	}
-  this.config = function(secret){
-    var result = self.get('config');
-
-    secret = secret||result.secret||'';
-    result.secret = secret;
+  this.config = function(newConfig){
+    var result = self.get('config')||{};
+    if(newConfig){
+      for(field in newConfig){
+        result[field] = newConfig[field];
+      }
+    }else{
+      newConfig = {};
+    }
+    var secret = newConfig.secret||result.secret||'';
     if (secret.startsWith('local')){
       result.url = 'http://localhost:7003/v1/';
       result.reportingUrl = "http://localhost:24052";

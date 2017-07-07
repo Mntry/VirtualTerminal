@@ -26,6 +26,7 @@ app.service('$pay', ['$http', '$rootScope', '$localStorage', function($http, $ro
 			$rootScope.showProgress = false;
 			if(callback)
 			{
+				response.data.processedDate = Date.now();
 				callback({content: response.data, isSuccessful: false, formattedMsg: formattedMsg});
 			}
 		};
