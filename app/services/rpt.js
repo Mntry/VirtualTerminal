@@ -26,6 +26,7 @@ app.service('$rpt',['$http', '$rootScope', '$localStorage', function($http, $roo
       callback(groups);
     },
     function(reponse) {
+        $rootScope.showProgress = false;
         $rootScope.showError('could not load available groups. Try again later');
     });
   };
