@@ -12,7 +12,7 @@ app.service('$localStorage', function(){
 		return result;
 	}
   this.config = function(newConfig){
-    var result = self.get('config');
+    var result = self.get('config')||{};
     if(newConfig){
       for(field in newConfig){
         result[field] = newConfig[field];
