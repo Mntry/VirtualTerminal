@@ -83,6 +83,7 @@
         <th class="sorting_disabled">Amount</th>
         <th class="sorting_disabled">Brand</th>
         <th class="sorting_disabled">RefNo</th>
+        <th class="sorting_disabled">Receipt</th>
       </tr>
     </thead>
     <tbody>
@@ -91,9 +92,54 @@
         <td>{{r.Amount}}</td>
         <td>{{r.Brand}}</td>
         <td>{{r.RefNo}}</td>
+        <td>
+          <a ng-click="r.showReceipt=true;" class="btn btn-complete btn-sm">Receipt</a>
+          <modal-dialog show="r.showReceipt">
+            <div id="printDiv">
+              <div style="text-align:center;">
+                <p>
+                  ****{{$root.config.merchantName}}****
+                </p>
+                <p>
+                  **{{$root.config.merchantAddress1}}**
+                </p>
+                <p ng-show="$root.config.merchantAddress2">
+                  **{{$root.config.merchantAddress2}}**
+                </p>
+                <p>
+                  **{{$root.config.merchantPhone}}**
+                </p>
+              </div>
+              <div>
+                <p>
+                  {{r.processedDate | date:'MM/dd/yyyy h:mma'}}
+                </p>
+                <p ng-show="r.Brand">
+                  CRED SALE {{r.Amount | currency}}
+                </p>
+                <p ng-show="r.Balance">
+                  GIFT SALE {{r.Amount | currency}}
+                </p>
+                <p>
+                  {{r.Account}} XX/XX
+                </p>
+                <p ng-show="r.AuthCode">
+                  APP: {{r.AuthCode}}
+                </p>
+                <p ng-show="r.RefNo">
+                  REF: {{r.RefNo}}
+                </p>
+                <p ng-show="r.Brand">
+                  I AGREE TO PAY ABOVE TOTAL AMOUNT<br/>
+                  ACCORDING TO CARD ISSUER AGREEMENT
+                </p>
+                <p ng-show="r.Brand">
+                  X<hr/>
+                </p>
+              </div>
+            </div>
+          </modal-dialog>
       </tr>
     </tbody>
   </table>
-</div>
-<div ng-show="op == 'Swipe'">
 </div>

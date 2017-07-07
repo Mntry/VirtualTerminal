@@ -106,7 +106,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 					successCount++;
 				}
 				else{
-					failures.push(response.content);
+					failures.push(response);
 				}
 				var curAccount = $scope.savedAccounts.filter(function(a){return a.token == response.content.Token});
 				if(curAccount.length > 0){
@@ -118,7 +118,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 					if(failures.length == 0){
 						$rootScope.showSuccess("Successfully processed " + successCount + " transactions");
 					}else{
-						for(let f; f > failures.length; f++){
+						for(let f = 0; f < failures.length; f++){
 							var curFail = failures[f];
 							$rootScope.showError(curFail.formattedMsg);
 						}

@@ -15,9 +15,19 @@ function($rootScope, $scope, $localStorage) {
     for(var key in config) {
       $scope[key] = config[key];
     }
+
     $scope.secretType = 'password';
-    var setUrls = function(secret){
-      var config = $localStorage.config(secret);
+    var setUrls = function(){
+      var config = {};
+      var values = Object.getOwnPropertyNames($scope);
+      for (var i = 0; i < values.length; i++){
+        var key =  values[i];
+        if(key.indexOf("$") == 0 || typeof($scope[key]) == 'function'){
+          continue;
+        }
+        config[key] = $scope[key];
+      }
+      var config = $localStorage.config(config);
       $rootScope.config = config;
       for(var key in config) {
         $scope[key] = config[key];

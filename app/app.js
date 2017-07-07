@@ -64,7 +64,7 @@ app.controller("TabCtrl", ['$scope', '$location', function($scope, $location){
 
 app.run(function($rootScope, $localStorage){
 		$rootScope.showProgress = false;
-		$rootScope.config = $localStorage.get('config');
+		$rootScope.config = $localStorage.config();
 		//initializing scope
 		if (!$rootScope.config){
 			$rootScope.config = {
