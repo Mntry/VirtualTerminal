@@ -54,9 +54,16 @@ app.directive('swipeReceiver', ['$document', '$timeout', function ($document, $t
             track2Length = parseInt("0X"+track2Length, 16);
             track3Length = parseInt("0X"+track3Length, 16);
 
-            var encTrk1Length = (track1Length+(track1Length % 8))*2;
-            var encTrk2Length = (track2Length+(track2Length % 8))*2;
-            var encTrk3Length = (track3Length+(track3Length % 8))*2;
+            var roundToByte = function(length) {
+              if(length % 8 == 0){
+                return length;
+              }
+              return length + (8-(length % 8));
+            };
+
+            var encTrk1Length = roundToByte(track1Length)*2;
+            var encTrk2Length = roundToByte(track2Length)*2;
+            var encTrk3Length = roundToByte(track3Length)*2;
 
             featureMask = parseInt("0X"+featureMask, 16);
             hashStatusMask = parseInt("0X"+hashStatusMask, 16);
