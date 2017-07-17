@@ -16,9 +16,11 @@ app.service('$pay', ['$http', '$rootScope', '$localStorage', function($http, $ro
 	};
 	var buildFailureHandler = function(callback, suppressNotification){
 		return function(response){
-			var formattedMsg = (response.data.Status||"ERROR")
-							+ " (" + (response.data.Account|| "NoAccount") + ")"
-							+ ":" + response.data.Message;
+			var data = (response.data || {});
+			var status = (data.Status||"ERROR");
+			var account = (data.Account|| "NoAccount");
+			var message = (data.Message || "Server Error. Please try agian.");
+			var formattedMsg = status + " (" + account + ")" + ":" + message;
 			if(!suppressNotification)
 			{
 				$rootScope.showError(formattedMsg);
