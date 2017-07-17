@@ -85,7 +85,7 @@ app.directive('swipeReceiver', ['$document', '$timeout', function ($document, $t
               encTrk1 = raw.substr(start, encTrk1Length);
               start += encTrk1Length;
               encTrk2 = raw.substr(start, encTrk2Length);
-              start += encTrk3Length;
+              start += encTrk2Length;
               encTrk3 = raw.substr(start, encTrk3);
 
               scope.accountKey = raw.substr(raw.length-26,20);
