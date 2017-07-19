@@ -79,7 +79,7 @@
   <table class="table table-hover dataTabe no-footer" role="grid">
     <thead>
       <tr>
-        <th class="sorting_disabled">Account(last4)</th>
+        <th class="sorting_disabled">Account</th>
         <th class="sorting_disabled">Amount</th>
         <th class="sorting_disabled">Brand</th>
         <th class="sorting_disabled">RefNo</th>
@@ -90,7 +90,7 @@
       <tr ng-repeat="r in responses">
         <td>{{r.Account}}</td>
         <td>{{r.Amount}}</td>
-        <td>{{r.Brand}}</td>
+        <td ng-if="r.Brand">{{r.Brand}}</td><td ng-if="!r.Brand">Gift</td>
         <td>{{r.RefNo}}</td>
         <td>
           <a ng-click="r.showReceipt=true;" class="btn btn-complete btn-sm">Receipt</a>
@@ -103,7 +103,7 @@
                 <p>
                   **{{$root.config.merchantAddress1}}**
                 </p>
-                <p ng-show="$root.config.merchantAddress2">
+                <p ng-if="$root.config.merchantAddress2">
                   **{{$root.config.merchantAddress2}}**
                 </p>
                 <p>
@@ -114,26 +114,26 @@
                 <p>
                   {{r.processedDate | date:'MM/dd/yyyy h:mma'}}
                 </p>
-                <p ng-show="r.Brand">
+                <p ng-if="r.Brand">
                   CRED SALE {{r.Amount | currency}}
                 </p>
-                <p ng-show="r.Balance">
+                <p ng-if="r.Balance">
                   GIFT SALE {{r.Amount | currency}}
                 </p>
                 <p>
                   {{r.Account}} XX/XX
                 </p>
-                <p ng-show="r.AuthCode">
+                <p ng-if="r.AuthCode">
                   APP: {{r.AuthCode}}
                 </p>
-                <p ng-show="r.RefNo">
+                <p ng-if="r.RefNo">
                   REF: {{r.RefNo}}
                 </p>
-                <p ng-show="r.Brand">
+                <p ng-if="r.Brand">
                   I AGREE TO PAY ABOVE TOTAL AMOUNT<br/>
                   ACCORDING TO CARD ISSUER AGREEMENT
                 </p>
-                <p ng-show="r.Brand">
+                <p ng-if="r.Brand">
                   X<hr/>
                 </p>
               </div>
