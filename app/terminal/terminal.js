@@ -13,7 +13,11 @@ angular.module('myApp.terminal', ['ngRoute'])
 function($scope, $pay, $sv) {
   $scope.op = "Credit";
   $scope.mode = 'Manual';
-  $scope.responses = $scope.responses||[];
+  var r = sessionStorage.getItem('terminalResponses');
+  $scope.responses = [];
+  if(r){
+    $scope.responses = JSON.parse(r);
+  }
   $scope.request = $scope.request||{}; //fields will be added via angular!
   $scope.swipeEnabled = false;
   $scope.$watch('mode', function(newVal, oldVal){
@@ -22,6 +26,12 @@ function($scope, $pay, $sv) {
 
   $scope.requestPayment = function(){
     var msg = $scope.request;
+    var successResponse = function(response){
+      $scope.request = {};
+      $scope.mode = 'Manual';
+      $scope.responses.unshift(response.content);
+      sessionStorage.setItem('terminalResponses', JSON.stringify($scope.responses));
+    };
     if($scope.op == "Credit"){
       if($scope.request.Account && $scope.request.Account.indexOf("*") != -1){
         delete $scope.request.Account;
@@ -29,16 +39,19 @@ function($scope, $pay, $sv) {
       }
       $pay.processCredit(msg, function(response){
         if (response.isSuccessful){
-          $scope.request = {};
-          $scope.mode = 'Manual';
-          $scope.responses.unshift(response.content);
+          successResponse(response);
         }
       });
     }else if ($scope.op == "Gift"){
-      $sv.sale({
+      var msg = {
         Amount: $scope.request.Amount,
         Account: $scope.request.Account,
         CVV: $scope.request.CVV
+      };
+      $sv.sale(msg, function(response){
+        if(response.isSuccessful){
+          successResponse(response);
+        }
       });
     }
   };
