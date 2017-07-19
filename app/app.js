@@ -14,7 +14,7 @@ var app = angular.module('myApp', [
 
 app.config(['$locationProvider',  '$routeProvider', function($locationProvider,  $routeProvider ) {
 	$locationProvider.hashPrefix('!');
-	$routeProvider.otherwise({redirectTo: '/configure'});
+	$routeProvider.otherwise({redirectTo: '/terminal'});
 }]);
 
 app.controller("NotificationCtrl", ['$rootScope', '$timeout', function($rootScope, $timeout){
@@ -62,16 +62,17 @@ app.controller("TabCtrl", ['$scope', '$location', function($scope, $location){
 	};
 }]);
 
-app.run(function($rootScope, $localStorage){
+app.run(function($rootScope, $localStorage, $location){
 		$rootScope.showProgress = false;
 		$rootScope.config = $localStorage.config();
 		//initializing scope
-		if (!$rootScope.config){
+		if (!$rootScope.config.secret || $rootScope.config.secret == ''){
 			$rootScope.config = {
 				url: '',
 				reportingUrl: '',
 				secret: ''
 			};
 			$localStorage.save('config', $rootScope.config);
+			$location.path('/configure');
 		}
 });

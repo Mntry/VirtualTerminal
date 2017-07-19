@@ -3,22 +3,17 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
      'Authorization': $localStorage.config().secret,
      'Content-Type': 'application/json'
   };
-  var createGuid = function()
-  {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
-        return v.toString(16);
-    });
-  };
   var buildSuccessHandler = function(callback){
 		return function(response){
-      response.data.guid = createGuid();
+      response.data.guid = $localStorage.createGuid();
       var msg = (response.data.Status||"Success")
 								+ " (" + (response.data.Account|| "NoAccount") + ")"
 								+ ": " + response.data.Message;
       if(!response.data.Amount){
         msg = "Current Balance for " + response.data.Account
         + " is " + response.data.Balance;
+      }else if(response.data.Balance){
+        msg += " (Balance: "+response.data.Balance+")";
       }
 			$rootScope.showSuccess(msg);
       $rootScope.showProgress = false;
@@ -30,14 +25,18 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
 	};
 	var buildFailureHandler = function(callback){
 		return function(response){
-			var formattedMsg = (response.data.Status||"ERROR")
-							+ " (" + (response.data.Account|| "NoAccount") + ")"
-							+ ":" + response.data.Message;
+      var data = response.data || {};
+			var formattedMsg = (data.Status||"ERROR")
+							+ " (" + (data.Account|| "NoAccount") + ")"
+							+ ":" + data.Message;
+      if(data.Balance){
+        formattedMsg += "(Balance: "+data.Balance+")";
+      }
       $rootScope.showError(formattedMsg);
       $rootScope.showProgress = false;
 			if(callback)
 			{
-				callback({content: response.data, isSuccessful: false, formattedMsg: formattedMsg});
+				callback({content: data, isSuccessful: false, formattedMsg: formattedMsg});
 			}
 		};
 	};
