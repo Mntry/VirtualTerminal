@@ -201,3 +201,6 @@ li {
     left: 0;
     right: 0;
 }
+#printDiv p {
+  font-size: 10pt;
+}
