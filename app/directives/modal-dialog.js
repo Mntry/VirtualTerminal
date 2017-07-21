@@ -35,7 +35,7 @@ app.directive('modalDialog', ['$document', '$window', function($document, $windo
     template: '<div class="ng-modal" ng-show="show">'+
   '<div class="ng-modal-overlay" ng-click="hideModal()"></div>' +
   '<div class="ng-modal-dialog" ng-style="dialogStyle">' +
-  '<button type="button" class="close" ng-click="hideModal()"><i class="pg-close fs-14"></i></button>' +
+  '<button type="button" class="close" ng-click="hideModal()"><i class="fa fa-close fs-14"></i></button>' +
   '<div class="ng-modal-dialog-content" ng-transclude></div>' +
   '<a class="btn btn-primary btn-block" ng-show="enablePrint" ng-click="print()">Print</a>' +
   '</div></div>'

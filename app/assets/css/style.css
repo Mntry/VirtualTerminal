@@ -9,12 +9,18 @@
     display: none !important;
 }
 
+.terminal-container {
+  width: 600px;
+  margin: auto;
+}
+
 .receipt-overlay {
   background: white;
   position: absolute;
   z-index: 1000;
 
 }
+hr {margin-top:0}
 
 /* Overrides */
 .in-progress {
@@ -160,7 +166,7 @@ li {
   /* A centered div above the overlay with a box shadow. */
   z-index:10000;
   position: absolute;
-  width: 550px; /* Default */
+  width: 230px; /* Default */
 
   /* Center the dialog */
   top: 50%;

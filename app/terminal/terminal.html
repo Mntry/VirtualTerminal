@@ -98,16 +98,10 @@
             <div id="printDiv">
               <div style="text-align:center;">
                 <p>
-                  ****{{$root.config.merchantName}}****
-                </p>
-                <p>
-                  **{{$root.config.merchantAddress1}}**
-                </p>
-                <p ng-if="$root.config.merchantAddress2">
-                  **{{$root.config.merchantAddress2}}**
-                </p>
-                <p>
-                  **{{$root.config.merchantPhone}}**
+                  *{{$root.config.merchantName}}*<br />
+                  {{$root.config.merchantAddress1}}<br />
+                  <span ng-if="$root.config.merchantAddress2">{{$root.config.merchantAddress2}}</span><br />
+                  {{$root.config.merchantPhone}}<br /><hr />
                 </p>
               </div>
               <div>
@@ -131,7 +125,7 @@
                 </p>
                 <p ng-if="r.Brand">
                   I AGREE TO PAY ABOVE TOTAL AMOUNT<br/>
-                  ACCORDING TO CARD ISSUER AGREEMENT
+                  ACCORDING TO CARD ISSUER AGREEMENT<br /><br />
                 </p>
                 <p ng-if="r.Brand">
                   X<hr/>
