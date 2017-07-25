@@ -92,15 +92,15 @@ app.service('$swiperFactory',['$http', '$rootScope', '$localStorage', function($
     };
   };
   var secuRedKeyboard = new baseSwiper();
-  secuRedKeyboard.display = 'SREDKey + Keypad';
+  secuRedKeyboard.display = 'SecuRed + Keypad';
 
   var secureRed = new baseSwiper();
-  secureRed.display = "secureRed Swiper Only";
+  secureRed.display = "SecuRed";
   secureRed.showManual = true;
 
   var swipers = {
-    'SwipeRed-KeyPad': secuRedKeyboard,
-    'SwipeRed': secureRed
+    'SecuRed-Keypad': secuRedKeyboard,
+    'SecuRed': secureRed
   };
   // END OF SWIPERS
   this.getSwiper = function(selectedSwiper){
