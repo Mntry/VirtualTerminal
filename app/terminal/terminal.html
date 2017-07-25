@@ -14,7 +14,7 @@
           <a class="btn btn-complete" ng-click="op = 'Gift'" ng-class="{active:op=='Gift'}">Gift</a>
         </div>
       </div>
-      <div class="col-sm-6">
+      <div class="col-sm-6" ng-show="showEntryModeToggle">
         <div class="btn-group form-group form-group-default">
           <label>Entry Mode</label>
           <a class="btn btn-complete" ng-click="mode = 'Manual'" ng-class="{active:mode=='Manual'}">Manual</a>

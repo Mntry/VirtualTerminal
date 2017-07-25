@@ -39,7 +39,7 @@
       <input class="form-control" type="text" ng-model="cvv"></input>
       </div>
     </div>
-    <div class="col-sm-12">
+    <div class="col-sm-12" ng-show="$root.config.showSwiper">
       <div class="form-group form-group-default">
         <label>Swipe For Account Details</label>
         <swipe-receiver account="account" account-key="accountKey" encrypted-account="encryptedAccount" enable-swipe="swipeEnabled" mode="swiperMode"><swipe-receiver>
