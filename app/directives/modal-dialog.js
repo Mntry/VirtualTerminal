@@ -22,7 +22,7 @@ app.directive('modalDialog', ['$document', '$window', function($document, $windo
       scope.print = function() {
         var content = printDiv.html();
         var title = scope.printTitle||'Print';
-        var printWindow = $window.open('', title, 'height=600,width=800');
+        var printWindow = $window.open('', title);
         printWindow.document.write('<html><head><title>'+title+'</title></head><body>');
         printWindow.document.write(content);
         printWindow.document.write('</body></html>');

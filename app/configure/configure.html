@@ -47,6 +47,17 @@
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="form-group form-group-default">
+        <label>Swiper Selection</label>
+        <select class="cs-select cs-skin-slide" data-init-plugin="cs-select" ng-model="selectedSwiper">
+          <option value="None">No Swiper</option>
+          <option ng-repeat="swiper in swipers" value="{{swiper.value}}" >{{swiper.display}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
 </div>
 <p><label>API URL:</label> <span ng-bind="url"> </span></p>
 <p><label>RPT URL:</label> <span ng-bind="reportingUrl"> </span></p>
