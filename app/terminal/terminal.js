@@ -12,7 +12,12 @@ angular.module('myApp.terminal', ['ngRoute'])
 .controller('TerminalCtrl', ['$scope', '$pay', '$sv',
 function($scope, $pay, $sv) {
   $scope.op = "Credit";
-  $scope.mode = 'Manual';
+  $scope.showEntryModeToggle = $scope.config.showSwiper && $scope.config.showManual;
+  if($scope.config.showSwiper){
+    $scope.mode = (($scope.config.showManual) ? 'Manual' : 'Swipe');
+  } else {
+    $scope.mode = 'Manual';
+  }
   var r = sessionStorage.getItem('terminalResponses');
   $scope.responses = [];
   if(r){

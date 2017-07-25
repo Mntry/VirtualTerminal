@@ -9,20 +9,22 @@ angular.module('myApp.configure', ['ngRoute'])
   });
 }])
 
-.controller('ConfigureCtrl', ['$rootScope', '$scope', '$localStorage',
-function($rootScope, $scope, $localStorage) {
+.controller('ConfigureCtrl', ['$rootScope', '$scope', '$localStorage', '$swiperFactory',
+function($rootScope, $scope, $localStorage, $swiperFactory) {
     var config = $localStorage.config();
     for(var key in config) {
       $scope[key] = config[key];
     }
 
     $scope.secretType = 'password';
-    var setUrls = function(){
+    var storeConfig = function(){
       var config = {};
       var values = Object.getOwnPropertyNames($scope);
       for (var i = 0; i < values.length; i++){
         var key =  values[i];
-        if(key.indexOf("$") == 0 || typeof($scope[key]) == 'function'){
+        if(key.indexOf("$") == 0
+        || typeof($scope[key]) == 'function'
+        || Array.isArray($scope[key])){
           continue;
         }
         config[key] = $scope[key];
@@ -33,10 +35,17 @@ function($rootScope, $scope, $localStorage) {
         $scope[key] = config[key];
       }
     };
+
+    $scope.selectedSwiper = $scope.selectedSwiper || 'None';
+
+    $scope.swipers = $swiperFactory.getListOfSwipers();
+
     $scope.saveConfig = function(){
       if($scope.secret && $scope.secret != ''){
-        $localStorage.config($scope.secret);
-        setUrls($scope.secret);
+        $scope.showSwiper =  $scope.selectedSwiper != 'None';
+        var swiper = $swiperFactory.getSwiper($scope.selectedSwiper) || {showManual: true};
+        $scope.showManual = swiper.showManual;
+        storeConfig();
         $rootScope.showSuccess("Saved Configuration");
       }else{
         $rootScope.showError("Cannot save empty secret!");
