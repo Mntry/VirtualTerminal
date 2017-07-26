@@ -92,7 +92,7 @@ app.service('$swiperFactory',['$http', '$rootScope', '$localStorage', function($
     };
   };
   var secuRedKeyboard = new baseSwiper();
-  secuRedKeyboard.display = 'SecuRed + Keypad';
+  secuRedKeyboard.display = 'SREDKey';
 
   var secureRed = new baseSwiper();
   secureRed.display = "SecuRed";
