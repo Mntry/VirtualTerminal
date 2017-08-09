@@ -5,20 +5,27 @@
   </div>
 </div>
 <div ng-hide="$root.config.url">cannot use virtual terminal until configured</div>
-  <form ng-submit="requestPayment()" ng-show="$root.config.url" class="m-t-10">
+  <form ng-submit="submitRequest()" ng-show="$root.config.url" class="m-t-10">
     <div class="row">
-      <div class="col-sm-6">
+      <div class="col-sm-4">
         <div class="btn-group form-group form-group-default">
           <label>Sale Type</label>
-          <a class="btn btn-complete" ng-click="op = 'Credit'" ng-class="{active:op=='Credit'}">Credit</a>
-          <a class="btn btn-complete" ng-click="op = 'Gift'" ng-class="{active:op=='Gift'}">Gift</a>
+          <a class="btn btn-sm btn-complete" ng-click="op = 'Credit'" ng-class="{active:op=='Credit'}">Credit</a>
+          <a class="btn btn-sm btn-complete" ng-click="op = 'Gift';tranType='Sale'" ng-class="{active:op=='Gift'}">Gift</a>
         </div>
       </div>
-      <div class="col-sm-6" ng-show="showEntryModeToggle">
+      <div class="col-sm-4" ng-show="showEntryModeToggle">
         <div class="btn-group form-group form-group-default">
           <label>Entry Mode</label>
-          <a class="btn btn-complete" ng-click="mode = 'Manual'" ng-class="{active:mode=='Manual'}">Manual</a>
-          <a class="btn btn-complete" ng-click="mode = 'Swipe'" ng-class="{active:mode=='Swipe'}">Swipe</a>
+          <a class="btn btn-sm btn-success" ng-click="mode = 'Manual'" ng-class="{active:mode=='Manual'}">Manual</a>
+          <a class="btn btn-sm btn-success" ng-click="mode = 'Swipe'" ng-class="{active:mode=='Swipe'}">Swipe</a>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="btn-group form-group form-group-default" ng-class="{disabled:op!='Credit'}">
+          <label>Tranaction Type</label>
+          <a ng-disabled="op!='Credit'" class="btn btn-sm btn-complete" ng-click="tranType = 'Sale'" ng-class="{active:tranType=='Sale'}">Sale</a>
+          <a ng-disabled="op!='Credit'" class="btn btn-sm btn-complete" ng-click="tranType = 'Return'" ng-class="{active:tranType=='Return'}">Return</a>
         </div>
       </div>
     </div>
@@ -68,10 +75,8 @@
           <input type="text" placeholder="#####" class="form-control" ng-model="request.Zip"  ng-disabled="op=='Gift'">
         </div>
       </div>
-      <div class="col-sm-6">
-      </div>
     </div>
-    <button type="submit" ng-submit="requestPayment()" class="btn btn-primary btn-block m-t-10">Process Transaction</button>
+    <button type="submit" ng-submit="submitRequest()" class="btn btn-primary btn-block m-t-10">Process Transaction</button>
   </form>
   <div ng-show="responses.length > 0">
   <hr>
@@ -87,13 +92,13 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="r in responses">
+      <tr ng-repeat="r in responses track by r.RefNo">
         <td>{{r.Account}}</td>
         <td>{{r.Amount}}</td>
         <td ng-if="r.Brand">{{r.Brand}}</td><td ng-if="!r.Brand">Gift</td>
         <td>{{r.RefNo}}</td>
         <td>
-          <a ng-click="r.showReceipt=true;" class="btn btn-complete btn-sm">Receipt</a>
+          <a ng-click="r.showReceipt=true;" class="btn btn-complete btn-sm">{{r.tranType}} Receipt</a>
           <modal-dialog show="r.showReceipt">
             <div id="printDiv">
               <div style="text-align:center;">
@@ -109,7 +114,7 @@
                   {{r.processedDate | date:'MM/dd/yyyy h:mma'}}
                 </p>
                 <p ng-if="r.Brand">
-                  CRED SALE {{r.Amount | currency}}
+                  CREDT {{r.tranType | uppercase}} {{r.Amount | currency}}
                 </p>
                 <p ng-if="r.Balance">
                   GIFT SALE {{r.Amount | currency}}

@@ -12,6 +12,7 @@ angular.module('myApp.terminal', ['ngRoute'])
 .controller('TerminalCtrl', ['$scope', '$pay', '$sv',
 function($scope, $pay, $sv) {
   $scope.op = "Credit";
+  $scope.tranType = 'Sale'; //credit == credit sale
   $scope.showEntryModeToggle = $scope.config.showSwiper && $scope.config.showManual;
   if($scope.config.showSwiper){
     $scope.mode = (($scope.config.showManual) ? 'Manual' : 'Swipe');
@@ -29,7 +30,7 @@ function($scope, $pay, $sv) {
     $scope.swipeEnabled = (newVal)&&newVal == 'Swipe';
   });
 
-  $scope.requestPayment = function(){
+  $scope.submitRequest = function(){
     var msg = $scope.request;
     var successResponse = function(response){
       $scope.request = {};
@@ -42,7 +43,8 @@ function($scope, $pay, $sv) {
         delete $scope.request.Account;
         delete $scope.request.Expiration;
       }
-      $pay.processCredit(msg, function(response){
+
+      $pay['process'+$scope.tranType](msg, function(response){
         if (response.isSuccessful){
           successResponse(response);
         }

@@ -100,7 +100,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 				payload.Zip = account.zip;
 			}
 
-			$pay.processCredit(payload, function(response){
+			$pay.processSale(payload, function(response){
 				processedCount++;
 				if(response.isSuccessful){
 					successCount++;
