@@ -27,7 +27,7 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
 		return function(response){
       var data = response.data || {};
 			var formattedMsg = (data.Status||"ERROR")
-							+ " (" + (data.Account|| "NoAccount") + ")"
+							+ " (" + (data.Account||data.Identifier||"NoAccount") + ")"
 							+ ":" + data.Message;
       if(data.Balance){
         formattedMsg += "(Balance: "+data.Balance+")";
@@ -40,23 +40,65 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
 			}
 		};
 	};
-  var validatePayload = function(payload, validateAmount){
-    if (typeof(validateAmount) == 'undefined'){
-      validateAmount = true;
+  var validatePayload = function(payload, fieldsToValidate){
+    if (typeof(fieldsToValidate) == 'undefined'){
+      fieldsToValidate = ['Amount', 'Account'];
     }
-    var isValid = true;
-    if( validateAmount && (!payload.Amount || payload.Amount.trim() =='')){
+    var shouldValidate = function(field)  {return fieldsToValidate.indexOf(field) != -1;};
+    var isNullOrEmpty = function(val) {return (!val || val.trim() == '');};
+    var validate = function(field){
+      if(shouldValidate(field) && isNullOrEmpty(payload[field])){
+        $rootScope.showError('invalid ' + field.toLowerCase());
+        return false;
+      }
+      return true;
+    };
+    var isValid = validate('Amount');
+    isValid = isValid && validate('Account');
+    isValid = isValid && validate('CVV');
+    isValid = isValid && validate('Identifier');
+    isValid = isValid && validate('NewIdentifier');
+    //only fields that contain '||'
+    var conditionalReqirements = fieldsToValidate.filter(function(field){return (field.indexOf('||') > -1)});
+    for(var i = 0; i < conditionalReqirements.length; i++){
+      var field = conditionalReqirements[i];
+      var conditionalfields = field.split('||');
+      var isConditionValid = true;
+      //at least one of the || fields needs a value
+      var allConditionalFieldsAreEmpty =  (conditionalfields.filter(function(f){return !isNullOrEmpty(payload[f]);}).length == 0);
+      if(allConditionalFieldsAreEmpty){
+        $rootScope.showError('At least one of the following is required: ' + conditionalfields.join() + '.');
+      }
+      isValid = isValid && !allConditionalFieldsAreEmpty;
+    }
 
-      $rootScope.showError('invalid amount');
-      isValid = false;
-    }
-    if(!payload.Account || payload.Account.trim() == ''){
-      $rootScope.showError('invalid account');
-      isValid = false;
-    }
+
     return isValid;
   };
-
+  this.create = function(payload, callback){
+    //create has no required fields
+    $rootScope.showProgress = true;
+    headers.Authorization = $localStorage.config().secret;
+    $http({
+      method: 'POST',
+      url: $localStorage.config().url + 'storedvalue/create',
+      data: JSON.stringify(payload),
+      headers:headers
+    }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
+  }
+  this.set = function(payload, callback) {
+    if(!validatePayload(payload, ['Account||Identifier', 'NewIdentifier||Lock||CreditLimit'])){
+      return;
+    }
+    $rootScope.showProgress = true;
+    headers.Authorization = $localStorage.config().secret;
+    $http({
+      method: 'POST',
+      url: $localStorage.config().url + 'storedvalue/set',
+      data: JSON.stringify(payload),
+      headers:headers
+    }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
+  };
   this.sale = function(payload, callback){
     if (!validatePayload(payload)){
       return;
@@ -71,7 +113,7 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
     }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
   };
   this.load = function(payload, callback){
-    if (!validatePayload(payload)){
+    if (!validatePayload(payload, ['Account||Identifier'])){
       return;
     }
     $rootScope.showProgress = true;
@@ -85,7 +127,7 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
   };
   this.balance = function(payload, callback){
 
-    if (!validatePayload(payload, false)){
+    if (!validatePayload(payload, ['Account||Identifier'])){
       return;
     }
     $rootScope.showProgress = true;
