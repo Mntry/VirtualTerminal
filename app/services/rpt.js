@@ -1,43 +1,72 @@
-app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
+app.service('$rpt',['$http', '$rootScope', '$localStorage', function($http, $rootScope, $localStorage) {
   var rpts = [];
   var headers = {
-     'Authorization': $rootScope.config.secret,
+     'Authorization': $localStorage.config().secret,
      'Content-Type': 'application/json'
   };
+  var groupsLoaded = false;
   var groups = [];
-  $http({
-    method: 'GET',
-    url: $rootScope.config.reportingUrl +  '/V1/Groups',
-    headers: headers
-  }).then(function(response){groups = response.data;},
+  var $rpt = this;
+  this.loadGroups = function(callback){
+    $rootScope.showProgress = true;
+    if(groupsLoaded){
+      $rootScope.showProgress = false;
+      callback(groups);
+      return;
+    }
+    headers.Authorization = $localStorage.config().secret;
+    $http({
+      method: 'GET',
+      url: $localStorage.config().reportingUrl +  '/V1/Groups',
+      headers: headers
+    }).then(function(response){
+      groups = response.data;
+      this.groupsLoaded = true;
+      $rootScope.showProgress = false;
+      callback(groups);
+    },
     function(reponse) {
-      $rootScope.notifications.unshift({
-        class:'alert alert-danger',
-        message: 'could not load available groups. Try again later'
-      });
+        $rootScope.showProgress = false;
+        $rootScope.showError('could not load available groups. Try again later');
     });
+  };
   this.loadReports = function(callback){
+    $rootScope.showProgress = true;
     $http({
         method: 'GET',
-        url: $rootScope.config.reportingUrl + '/swagger/docs/V1'
+        url: $localStorage.config().reportingUrl + '/swagger/docs/V1'
     }).then(
       function(response){
         rpts = [];
         for(path in response.data.paths){
            var rpt = response.data.paths[path].get;
+           if(rpt.schemes && rpt.schemes.indexOf("Utility") != -1){
+             continue; // utility endpoints do not need to be listed
+           }
+           rpt.operationId = rpt.operationId.replace(/\_/g, " ");
            rpt.path = path;
            formatFields(rpt);
            rpt.parameters = rpt.parameters||[];
            rpts.push(rpt);
         }
-        callback(rpts);
+        $rpt.loadGroups(function(groups){
+          var options = groups.map(function(g){return {value:g.GroupId, text:g.Group};});
+          for(var i = 0; i<rpts.length;i++){
+            for(var j = 0; j<rpts[i].parameters.length;j++){
+              var grpParam = rpts[i].parameters[j];
+              if(grpParam.needsGroups){
+                grpParam.options = options;
+              }
+            }
+          }
+          $rootScope.showProgress = false;
+          callback(rpts);
+        });
       },
       function(response){
-        $rootScope.notifications.unshift({
-          class:'alert alert-danger',
-          message: 'could not load available reports. Try again later'
-        });
-    });
+        $rootScope.showProgress = false;
+        $rootScope.showError('could not load available reports. Try again later');
+      });
   };
   var formatFields = function(rpt){
     var today = new Date();
@@ -61,12 +90,13 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
       if(p.name == 'id'){
         if (rpt.path.indexOf("Groups/{id}") != -1){
           p.formattedName = "Group " + p.formattedName;
-          p.options = groups.map(function(g){return {value:g.GroupId, text:g.Group};});
+          p.needsGroups = true;
         }
       }
     }
   };
   this.getReportData = function(operation, callback){
+    $rootScope.showProgress = true;
     var path = operation.path;
     var body = {};
     for(var i = 0; i < operation.parameters.length; i++){
@@ -94,33 +124,27 @@ app.service('$rpt',['$http', '$rootScope', function($http, $rootScope) {
       }
       return result;
     };
+    headers.Authorization = $localStorage.config().secret;
     $http({
       method:'GET',
-      url: $rootScope.config.reportingUrl + path,
+      url: $localStorage.config().reportingUrl + path,
       body: body,
       headers: headers
     }).then(function(response){
       var headers = buildHeaders(response.data);
+      $rootScope.showProgress = false;
       callback(headers, response.data);
       if(response.data.length == 0){
-        $rootScope.notifications.unshift({
-          class:'alert-success',
-          message: "no data returned"
-        });
+        $rootScope.showSuccess("no data returned");
       }
 
     }, function(response){
+      $rootScope.showProgress = false;
       var msg = 'could not load report data. try again later';
       if (response.status == 400){
         msg = response.data.Status + ":" + response.data.Message;
       }
-      $rootScope.notifications.unshift({
-        class:'alert alert-danger',
-        message: msg
-      });
+      $rootScope.showError(msg);
     });
-
-
-
   };
 }]);

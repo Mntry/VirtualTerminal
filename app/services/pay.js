@@ -1,61 +1,73 @@
-app.service('$pay', ['$http', '$rootScope', function($http, $rootScope){
-	$rootScope.config;
-	var buildSuccessHandler = function(callback, suppressNotification){
+app.service('$pay', ['$http', '$rootScope', '$localStorage', function($http, $rootScope, $localStorage){
+	var buildSuccessHandler = function(callback, suppressNotification, tranType){
 		return function(response){
 			if(!suppressNotification)
 			{
-				$rootScope.notifications.unshift({
-					class: "alert-success",
-					message: (response.data.Status||"Success")
+				$rootScope.showSuccess((response.data.Status||"Success")
 									+ " (" + (response.data.Account|| "NoAccount") + ")"
-									+ ":" + response.data.Message
-				});
+									+ ":" + response.data.Message);
 			}
+			$rootScope.showProgress = false;
 			if(callback)
 			{
+				response.data.tranType = tranType;
 				callback({content: response.data, isSuccessful: true});
 			}
 		};
 	};
 	var buildFailureHandler = function(callback, suppressNotification){
 		return function(response){
-			var formattedMsg = (response.data.Status||"ERROR")
-							+ " (" + (response.data.Account|| "NoAccount") + ")"
-							+ ":" + response.data.Message;
+			var data = (response.data || {});
+			var status = (data.Status||"ERROR");
+			var account = (data.Account|| "NoAccount");
+			var message = (data.Message || "Server Error. Please try agian.");
+			var formattedMsg = status + " (" + account + ")" + ":" + message;
 			if(!suppressNotification)
 			{
-
-				$rootScope.notifications.unshift({
-					class: "alert-danger",
-					message: formattedMsg
-				});
+				$rootScope.showError(formattedMsg);
 			}
+			$rootScope.showProgress = false;
 			if(callback)
 			{
+				response.data.processedDate = Date.now();
 				callback({content: response.data, isSuccessful: false, formattedMsg: formattedMsg});
 			}
 		};
 	};
 	var headers = {
-		 'Authorization': $rootScope.config.secret,
+		 'Authorization': $localStorage.config().secret,
 		 'Content-Type': 'application/json'
 	 };
-	this.processCredit = function (payload, callback, suppressNotification){
+	this.processSale = function (payload, callback, suppressNotification){
+		headers.Authorization = $localStorage.config().secret;
+		$rootScope.showProgress = true;
 		$http({
 			method: 'POST',
-			url: $rootScope.config.url + 'credit/sale/',
+			url: $localStorage.config().url + 'credit/sale/',
 			data: JSON.stringify(payload),
 			headers: headers
-		}).then(buildSuccessHandler(callback, suppressNotification),
+		}).then(buildSuccessHandler(callback, suppressNotification, 'Sale'),
 						buildFailureHandler(callback, suppressNotification));
 
 	};
 	this.authCheck = function(payload, callback, suppressNotification){
+		headers.Authorization = $localStorage.config().secret;
+		$rootScope.showProgress = true;
 		$http({
 			method: 'POST',
-			url: $rootScope.config.url + 'credit/authonly',
+			url: $localStorage.config().url + 'credit/authonly',
 			data: JSON.stringify(payload),
 			headers: headers
 		}).then(buildSuccessHandler(callback, suppressNotification), buildFailureHandler(callback, suppressNotification));
+	};
+	this.processReturn = function(payload, callback, suppressNotification) {
+		headers.Authorization = $localStorage.config().secret;
+		$rootScope.showProgress = true;
+		$http({
+			method: 'POST',
+			url: $localStorage.config().url + 'credit/return',
+			data: JSON.stringify(payload),
+			headers: headers
+		}).then(buildSuccessHandler(callback, suppressNotification, 'Return'), buildFailureHandler(callback, suppressNotification));
 	};
 }]);

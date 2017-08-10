@@ -9,33 +9,46 @@ angular.module('myApp.configure', ['ngRoute'])
   });
 }])
 
-.controller('ConfigureCtrl', ['$rootScope', '$scope', '$localStorage',
-function($rootScope, $scope, $localStorage) {
-    $scope.url = $rootScope.config.url;
-    $scope.secret = $rootScope.config.secret;
-    $scope.$watch('secret',function(oldValue, newValue){
-      if (newValue.startsWith('local')){
-        $scope.url = 'http://localhost:7003/v1/';
-        $scope.reportingUrl = "http://localhost:24052";
-      }else if (newValue.startsWith('test')){
-        $scope.url = 'https://pay-test.monetary.co/v1/'
-        $scope.reportingUrl = "https://reporting-test.monetary.co";
-      }else if (newValue.startsWith('cert')){
-        $scope.url = 'https://pay-cert.monetary.co/v1/'
-        $scope.reportingUrl = "https://reporting-cert.monetary.co";
-      }else{
-        $scope.url = 'https://pay.monetary.co/v1/'
-        $scope.reportingUrl = "https://reporting.monetary.co";
+.controller('ConfigureCtrl', ['$rootScope', '$scope', '$localStorage', '$swiperFactory',
+function($rootScope, $scope, $localStorage, $swiperFactory) {
+    var config = $localStorage.config();
+    for(var key in config) {
+      $scope[key] = config[key];
+    }
+
+    $scope.secretType = 'password';
+    var storeConfig = function(){
+      var config = {};
+      var values = Object.getOwnPropertyNames($scope);
+      for (var i = 0; i < values.length; i++){
+        var key =  values[i];
+        if(key.indexOf("$") == 0
+        || typeof($scope[key]) == 'function'
+        || Array.isArray($scope[key])){
+          continue;
+        }
+        config[key] = $scope[key];
       }
-    })
-    $scope.saveConfig = function(){
-      var config = {
-        url: $scope.url,
-        reportingUrl: $scope.reportingUrl,
-        secret: $scope.secret
-      };
+      var config = $localStorage.config(config);
       $rootScope.config = config;
-      $localStorage.save('config', config);
-      $rootScope.notifications.unshift({class:"success", message:"Saved Configuration"});
+      for(var key in config) {
+        $scope[key] = config[key];
+      }
+    };
+
+    $scope.selectedSwiper = $scope.selectedSwiper || 'None';
+
+    $scope.swipers = $swiperFactory.getListOfSwipers();
+
+    $scope.saveConfig = function(){
+      if($scope.secret && $scope.secret != ''){
+        $scope.showSwiper =  $scope.selectedSwiper != 'None';
+        var swiper = $swiperFactory.getSwiper($scope.selectedSwiper) || {showManual: true};
+        $scope.showManual = swiper.showManual;
+        storeConfig();
+        $rootScope.showSuccess("Saved Configuration");
+      }else{
+        $rootScope.showError("Cannot save empty secret!");
+      }
     };
 }]);

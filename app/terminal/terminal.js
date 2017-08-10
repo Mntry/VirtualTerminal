@@ -12,22 +12,53 @@ angular.module('myApp.terminal', ['ngRoute'])
 .controller('TerminalCtrl', ['$scope', '$pay', '$sv',
 function($scope, $pay, $sv) {
   $scope.op = "Credit";
-  $scope.responses = $scope.responses||[];
+  $scope.tranType = 'Sale'; //credit == credit sale
+  $scope.showEntryModeToggle = $scope.config.showSwiper && $scope.config.showManual;
+  if($scope.config.showSwiper){
+    $scope.mode = (($scope.config.showManual) ? 'Manual' : 'Swipe');
+  } else {
+    $scope.mode = 'Manual';
+  }
+  var r = sessionStorage.getItem('terminalResponses');
+  $scope.responses = [];
+  if(r){
+    $scope.responses = JSON.parse(r);
+  }
   $scope.request = $scope.request||{}; //fields will be added via angular!
-  $scope.requestPayment = function(){
+  $scope.swipeEnabled = false;
+  $scope.$watch('mode', function(newVal, oldVal){
+    $scope.swipeEnabled = (newVal)&&newVal == 'Swipe';
+  });
+
+  $scope.submitRequest = function(){
     var msg = $scope.request;
+    var successResponse = function(response){
+      $scope.request = {};
+      $scope.mode = 'Manual';
+      $scope.responses.unshift(response.content);
+      sessionStorage.setItem('terminalResponses', JSON.stringify($scope.responses));
+    };
     if($scope.op == "Credit"){
-      $pay.processCredit(msg, function(response){
+      if($scope.request.Account && $scope.request.Account.indexOf("*") != -1){
+        delete $scope.request.Account;
+        delete $scope.request.Expiration;
+      }
+
+      $pay['process'+$scope.tranType](msg, function(response){
         if (response.isSuccessful){
-          $scope.request = {};
-          $scope.responses.unshift(response.content);
+          successResponse(response);
         }
       });
     }else if ($scope.op == "Gift"){
-      $sv.sale({
+      var msg = {
         Amount: $scope.request.Amount,
         Account: $scope.request.Account,
         CVV: $scope.request.CVV
+      };
+      $sv.sale(msg, function(response){
+        if(response.isSuccessful){
+          successResponse(response);
+        }
       });
     }
   };

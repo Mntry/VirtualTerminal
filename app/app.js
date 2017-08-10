@@ -10,32 +10,43 @@ var app = angular.module('myApp', [
 	'myApp.stored-value',
 	'myApp.reports'
 ]);
-app.service('$localStorage', function(){
 
-	this.save = function(key, value){
-		localStorage.setItem(key, JSON.stringify(value));
-	};
-	this.get = function(key){
-		var result = null;
-		var value = localStorage.getItem(key);
-		if(value){
-			result = JSON.parse(value);
-		}
-		return result;
-	}
-});
 
-app.config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+app.config(['$locationProvider',  '$routeProvider', function($locationProvider,  $routeProvider ) {
 	$locationProvider.hashPrefix('!');
-	$routeProvider.otherwise({redirectTo: '/configure'});
+	$routeProvider.otherwise({redirectTo: '/terminal'});
 }]);
 
-app.controller("NotificationCtrl", ['$rootScope', function($rootScope){
-	$rootScope.notifications = [];;
+app.controller("NotificationCtrl", ['$rootScope', '$timeout', function($rootScope, $timeout){
+	$rootScope.notifications = [];
+	$rootScope.showSuccess = function(message){
+		var note = {
+			class: 'alert-success',
+			message: message
+		};
+		$rootScope.notifications.unshift(note);
+		$timeout(function(){
+			$rootScope.closeNotification(note);
+		}, 10000);
+	};
+	$rootScope.showError = function(message){
+		var note = {
+			class: 'alert-danger',
+			message: message
+		};
+		$rootScope.notifications.unshift(note);
+	};
+	$rootScope.closeAll = function(){
+		$rootScope.notifications = [];
+	};
 	$rootScope.closeNotification = function(item){
 		var index = $rootScope.notifications.indexOf(item);
 		$rootScope.notifications.splice(index, 1);
 	};
+
+	$rootScope.$on('$locationChangeSuccess', function() {
+		$rootScope.closeAll();
+	});
 }]);
 app.controller("TabCtrl", ['$scope', '$location', function($scope, $location){
 	$scope.tab = $location.path();
@@ -51,16 +62,17 @@ app.controller("TabCtrl", ['$scope', '$location', function($scope, $location){
 	};
 }]);
 
-app.run(function($rootScope, $localStorage){
-
-		$rootScope.config = $localStorage.get('config');
+app.run(function($rootScope, $localStorage, $location){
+		$rootScope.showProgress = false;
+		$rootScope.config = $localStorage.config();
 		//initializing scope
-		if (!$rootScope.config){
+		if (!$rootScope.config.secret || $rootScope.config.secret == ''){
 			$rootScope.config = {
 				url: '',
 				reportingUrl: '',
 				secret: ''
 			};
 			$localStorage.save('config', $rootScope.config);
+			$location.path('/configure');
 		}
 });

@@ -1,41 +1,95 @@
 
-<h1>Stored Value</h1>
-<div>
-<div ng-show="!$root.config.url">cannot use stored value until configured</div>
-<div class="bbtn-group btn-group-justified">
-  <a class="btn btn-complete" ng-click="op = 'Sale'" ng-class="{active:op=='Sale'}">Sale</a>
-  <a class="btn btn-complete" ng-click="op = 'Load'" ng-class="{active:op=='Load'}">Load</a>
-  <a class="btn btn-complete" ng-click="op = 'Balance'" ng-class="{active:op=='Balance'}">Balance</a>
+<h4>Gift Card</h4>
+<div class="panel-heading">
+  <div class="panel-title">
+    Run transactions, load value, and check balances
+  </div>
+  <div>
+    <a ng-click="showAdvanced = true" ng-hide="showAdvanced">Advanced Settings</a>
+    <a ng-click="showAdvanced = false; op='Sale'" ng-show="showAdvanced">Hide Advanced Settings</a>
+  </div>
 </div>
-<form ng-show="$root.config.url" ng-submit="submitTransaction()">
-  <div class="row">
+<p>
+  Select a gift card process, enter card data and "Process" below.
+</p>
+
+<div>
+  <div ng-show="!$root.config.url">cannot use stored value until configured</div>
+  <div class="bbtn-group btn-group-justified m-b-20">
+    <a class="btn btn-sm btn-complete" ng-click="op = 'Sale'" ng-class="{active:op=='Sale'}">Sale</a>
+    <a class="btn btn-sm btn-complete" ng-click="op = 'Load'" ng-class="{active:op=='Load'}">Load</a>
+    <a class="btn btn-sm btn-complete" ng-click="op = 'Balance'; amount = ''" ng-class="{active:op=='Balance'}">Balance</a>
+    <a class="btn btn-sm btn-complete" ng-click="op = 'Create'" ng-class="{active:op=='Create'}"  ng-show="showAdvanced">Create</a>
+    <a class="btn btn-sm btn-complete" ng-click="op = 'Set'" ng-class="{active:op=='Set'}" ng-show="showAdvanced">Set</a>
+  </div>
+  <form ng-show="$root.config.url" ng-submit="submitTransaction()">
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="form-group form-group-default input-group" ng-class="{disabled:op=='Balance'||op=='Set'}">
+          <span class="input-group-addon">
+            <i class="fa fa-dollar"></i>
+          </span>
+      <label>Amount</label>
+      <input class="form-control" type="text" ng-model="amount" placeholder="0.00" ng-disabled="op == 'Balance' || op == 'Set'" ng-required="op == 'Sale' || op == 'Load'"></input>
+      </div>
+    </div>
     <div class="col-sm-4">
-      <div class="form-group form-group-default input-group" ng-class="{disabled:op=='Balance'}">
+      <div class="form-group form-group-default" ng-class="{disabled:op=='Create'}">
+        <label>Account</label>
+        <input class="form-control" type="text" ng-model="account" ng-disabled="op == 'Create'" ng-required="!showAdvanced"></input>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group form-group-default"  ng-class="{disabled:op=='Create'}">
+      <label>CVV</label>
+      <input class="form-control" type="text" ng-model="cvv" ng-disabled="op=='Create'"></input>
+      </div>
+    </div>
+    <div class="col-sm-12" ng-show="$root.config.showSwiper">
+      <div class="form-group form-group-default">
+        <label>Swipe For Account Details</label>
+        <swipe-receiver account="account" account-key="accountKey" encrypted-account="encryptedAccount" enable-swipe="swipeEnabled" mode="swiperMode"><swipe-receiver>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-show="showAdvanced">
+    <div class="col-sm-4">
+      <div class="form-group form-group-default input-group" ng-class="{disabled:op!='Set'}">
         <span class="input-group-addon">
           <i class="fa fa-dollar"></i>
         </span>
-    <label>Amount</label>
-    <input class="form-control" type="text" ng-model="amount" placeholder="0.00" ng-disabled="op == 'Balance'" required></input>
+        <label>Credit Limit</label>
+        <input type="text" ng-model="creditLimit" class="form-control" ng-disabled="op != 'Set'"> </input>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group form-group-default">
+          <label ng-show="op != 'Set'">Identifier</label><label ng-show="op == 'Set'">New Identifier</label>
+          <input class="form-control" type="text" ng-model="identifier" />
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group form-group-default" ng-class="{disabled:op=='Balance'||op=='Set'}" >
+        <label>Invoice No</label>
+        <input class="form-control" type="text" ng-model="invoiceNo" ng-disabled="op == 'Balance' || op == 'Set'" />
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <div class="form-group form-group-default">
+        <label>Feature Flags</label>
+        <a class="btn btn-sm btn-default" ng-click="promo = !promo" ng-disabled="op == 'Sale' || op == 'Balance' || op == 'Set'"><i class="fa" ng-class="{'fa-check-square':promo, 'fa-square':!promo}"> Promotional</i></a>
+        <a class="btn btn-sm btn-default" ng-click="lock = !lock" ng-disabled="!(op == 'Create' || op == 'Set')"><i class="fa" ng-class="{'fa-check-square':lock, 'fa-square':!lock}"> Account Lock</i></a>
+        <a class="btn btn-sm btn-default" ng-click="overwriteCVV = !overwriteCVV" ng-disabled="op == 'Create'"><i class="fa" ng-class="{'fa-check-square':overwriteCVV, 'fa-square':!overwriteCVV}"> Overwrite CVV</i></a>
+      </div>
     </div>
   </div>
-  <div class="col-sm-4">
-    <div class="form-group form-group-default">
-      <label>Account</label>
-      <input class="form-control" type="text" ng-model="account"></input>
-    </div>
-  </div>
-  <div class="col-sm-4">
-    <div class="form-group form-group-default">
-    <label>CVV</label>
-    <input class="form-control" type="text" ng-model="cvv"></input>
-    </div>
-  </div>
-  <button ng-submit="submitTransaction()" class="btn btn-primary">Process {{op}}</button>
-</form>
+  <div class="row">
+    <button ng-submit="submitTransaction()" class="btn btn-block btn-primary">Process {{op}}</button>
+  </form>
 </div>
 <div ng-show="responses.length > 0">
   <hr/>
-  <h2>Responses</h2>
+  <h5>Responses</h5>
   <table style="width:100%;text-align:left;">
     <thead>
       <tr>

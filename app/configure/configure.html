@@ -1,4 +1,9 @@
 <h4>Configuration</h4>
+<div class="panel-heading">
+  <div class="panel-title">
+    Enable your virtual terminal
+  </div>
+</div>
 <form ng-submit="saveConfig(url, secret)">
   <p>
     Please enter your merchant secret to run transactions
@@ -8,12 +13,56 @@
   <div class="col-sm-12">
     <div class="form-group form-group-default">
       <label>Merchant Secret</label>
-      <input type="password" ng-model="secret" placeholder="##############" class="form-control" required>
+      <input type="{{secretType}}" ng-model="secret" placeholder="##############" class="form-control"  required>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-6">
+    <div class="form-group form-group-default">
+      <label>Merchant Name</label>
+      <input type="text" ng-model="merchantName" placeholder="" class="form-control"  required>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="form-group form-group-default">
+      <label>Merchant Phone</label>
+      <input type="text" ng-model="merchantPhone" placeholder="555-867-5309" class="form-control">
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="form-group form-group-default">
+      <label>Address Line 1</label>
+      <input type="text" ng-model="merchantAddress1" placeholder="123 Fake Street" class="form-control" ></input>
+    </div>
+  </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="form-group form-group-default">
+        <label>Address Line 2</label>
+        <input type="text" ng-model="merchantAddress2" placeholder="123 Fake Street" class="form-control" ></input>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="form-group form-group-default">
+        <label>Swiper Selection</label>
+        <select class="cs-select cs-skin-slide" data-init-plugin="cs-select" ng-model="selectedSwiper">
+          <option value="None">No Swiper</option>
+          <option ng-repeat="swiper in swipers" value="{{swiper.value}}" >{{swiper.display}}</option>
+        </select>
+      </div>
     </div>
   </div>
 </div>
 <p><label>API URL:</label> <span ng-bind="url"> </span></p>
 <p><label>RPT URL:</label> <span ng-bind="reportingUrl"> </span></p>
-  <button ng-submit="saveConfig(url, secret)" class="btn btn-primary btn-blockyou m-t-10">Save</button>
+<p><label>Engage URL:</label> <span ng-bind="engageUrl"> </span></p>
+<p><label>Reciept URL:</label> <span ng-bind="receiptUrl"> </span></p>
+  <button ng-submit="saveConfig()" class="btn btn-primary btn-blockyou m-t-10">Save</button>
 </div>
 </form>

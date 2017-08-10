@@ -22,22 +22,26 @@ function($rootScope, $scope, $localStorage, $pay) {
 	$scope.hasChanges = false;
 	$scope.processing = false;
 	$scope.backupContents = '';
+	$scope.swiperMode = 'Credit';
+	$scope.swipeEnabled = true;
 	$scope.authAndAddCard = function (){
 		if($scope.mode == 'process'){
 			return; //user clicked cancel
 		}
 		var authData = $scope.request;
 		authData.Amount = 0.00;
+		if(authData.EncryptedAccount){
+			delete authData.Account;
+			delete authData.Expiration;
+		}else {
+			delete authData.EncryptedAccount;
+			delete authData.AccountKey;
+		}
 		var reccuringAmount = $scope.reccuringAmount;
 		var alias = $scope.alias;
 		$pay.authCheck(authData, function(response){
 			if(!response.isSuccessful){
-				$rootScope.notifications.unshift({
-					class: 'alert-danger',
-					message: (response.data.Status||"ERROR")
-									+ " (" + (response.data.Account|| "NoAccount") + ")"
-									+ ":" + response.data.Message
-				});
+				$rootScope.showError(response.formattedMsg);
 				return;
 			}
 			var content = response.content;
@@ -47,12 +51,8 @@ function($rootScope, $scope, $localStorage, $pay) {
 			if (matchingAccounts.length > 0)
 			{
 				var index = $scope.savedAccounts.indexOf(matchingAccounts[0]);
-
-				$rootScope.notifications.unshift({
-					class: 'alert-danger',
-					message: "An account already exists for: " + content.Account.replace("X", "")
-								+ ", alias:" + alias + " '(see row "+(index+1)+")"
-				});
+				$rootScope.showError("An account already exists for: " + content.Account.replace("X", "")
+							+ ", alias:" + alias + " '(see row "+(index+1)+")");
 				return;
 			}
 
@@ -70,10 +70,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 
 
 			$localStorage.save('savedAccounts', $scope.savedAccounts);
-			$rootScope.notifications.unshift({
-				class: 'alert-success',
-				message: "Added " + alias
-			});
+			$rootScope.showSuccess("Added " + alias);
 		}, true);
 	};
 
@@ -103,13 +100,13 @@ function($rootScope, $scope, $localStorage, $pay) {
 				payload.Zip = account.zip;
 			}
 
-			$pay.processCredit(payload, function(response){
+			$pay.processSale(payload, function(response){
 				processedCount++;
 				if(response.isSuccessful){
 					successCount++;
 				}
 				else{
-					failures.push(response.content);
+					failures.push(response);
 				}
 				var curAccount = $scope.savedAccounts.filter(function(a){return a.token == response.content.Token});
 				if(curAccount.length > 0){
@@ -119,17 +116,11 @@ function($rootScope, $scope, $localStorage, $pay) {
 				}
 				if(processedCount == accountsToProcess.length){
 					if(failures.length == 0){
-						$rootScope.notifications.unshift({
-							class: 'alert-success',
-							message: "Successfully processed " + successCount + " transactions"
-						});
+						$rootScope.showSuccess("Successfully processed " + successCount + " transactions");
 					}else{
-						for(let f; f > failures.length; f++){
+						for(let f = 0; f < failures.length; f++){
 							var curFail = failures[f];
-							$rootScope.notifications.unshift({
-								class: 'alert-danger',
-								message: curFail.formattedMsg
-							});
+							$rootScope.showError(curFail.formattedMsg);
 						}
 					}
 					$scope.processing = false;
@@ -144,10 +135,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 			$localStorage.save('savedAccounts', $scope.savedAccounts);
 			if(typeof(suppressNotification) === 'undefined' || suppressNotification == false)
 			{
-				$rootScope.notifications.unshift({
-					class: 'alert-success',
-					message: "Saved Amount Changes"
-				});
+				$rootScope.showSuccess("Saved Amount Changes");
 			}
 			$scope.hasChanges = false;
 	};
@@ -211,10 +199,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 			}
 		}catch(e){
 			var msg = e.message || e.toString();
-			$rootScope.notifications.unshift({
-				class: 'alert-danger',
-				message: "Fail: " + msg
-			});
+			$rootScope.showError("Fail: " + msg);
 			return;
 		}
 

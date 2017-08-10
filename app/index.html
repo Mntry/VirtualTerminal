@@ -8,7 +8,7 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>Single Page Payements - Monetary</title>
+  <title>Virtual Terminal - Monetary</title>
 
   <meta name="description" content="Quick and dirty way of handling payments">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -47,6 +47,16 @@
   </script>
 </head>
 <body>
+<!-- START PLEASE WAIT MODAL -->
+<div ng-show="$root.showProgress" class="in-progress">
+  <div class="in-progress-contents">
+    <h5>Please wait while we process your request</h5>
+    <div class="progress-circle-indeterminate"></div>
+    <input class="progress-circle" ui-jq="circularProgress" value="65" type="hidden" data-color="primary">
+  </div>
+</div>
+<!-- END PLEASE WAIT MODAL -->
+
 <!-- START PAGE-CONTAINER -->
   <div class="page-container ">
 
@@ -55,7 +65,7 @@
 <![endif]-->
 
 <!-- START CONTENT -->
-    <div class="register-container full-height sm-p-t-30">
+    <div class="terminal-container full-height sm-p-t-30">
       <div class="container-sm-height full-height">
         <div class="row row-sm-height">
           <div class="col-sm-12 col-sm-height col-middle">
@@ -127,9 +137,14 @@
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="app.js"></script>
   <!-- services here -->
+  <script src="services/local-storage.js"></script>
   <script src="services/sv.js"></script>
   <script src="services/pay.js"></script>
   <script src="services/rpt.js"></script>
+  <script src="services/swiper-factory.js"></script>
+  <!-- directives here -->
+  <script src="directives/swipe-receiver.js"></script>
+  <script src="directives/modal-dialog.js"></script>
   <!-- views here-->
   <script src="configure/configure.js"></script>
   <script src="terminal/terminal.js"></script>
