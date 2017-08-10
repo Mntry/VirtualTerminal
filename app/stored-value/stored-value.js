@@ -13,13 +13,28 @@ angular.module('myApp.stored-value', ['ngRoute'])
 function($scope, $sv) {
     $scope.op = "Sale";
     $scope.responses =[];
+
     $scope.swipeEnabled = true;
     $scope.swiperMode = 'Gift';
+    $scope.resetAdvanced = function(){
+      $scope.promo = false;
+      $scope.lock = false;
+      $scope.overwriteCVV = false;
+      $scope.invoiceNo = '';
+      $scope.identifier = '';
+      $scope.creditLimit = '';
+      if($scope.op == 'Create'){
+        $scope.account = '';
+      }
+    };
+    $scope.resetAdvanced();
     var r = sessionStorage.getItem('svResponses');
     if(r){
       $scope.responses = JSON.parse(r);
     }
-
+    $scope.$watch('op', function(newVal, oldVal){
+      $scope.resetAdvanced();
+    });
     $scope.submitTransaction = function(){
       var op = $scope.op;
       var payload = $scope['build'+op+'Request']();
@@ -33,6 +48,7 @@ function($scope, $sv) {
           }
           else{
             $scope.account = '';
+            $scope.resetAdvanced();
             $scope.cvv = '';
             $scope.swipeEnabled = true;
             $scope.responses.unshift(result);
@@ -42,18 +58,49 @@ function($scope, $sv) {
       });
     };
     $scope.buildBalanceRequest = function() {
-      return {
+      var result = {
         Account: $scope.account,
         CVV: $scope.cvv
       };
+      if ($scope.showAdvanced){
+        result.Identifier = $scope.identifier;
+        result.OverrideCVV = $scope.overwriteCVV;
+      }
+      return result;
+    };
+    $scope.buildCreateRequest = function() {
+      return {
+        Amount: $scope.amount,
+        NewIdentifier: $scope.identifier,
+        InvoiceNo: $scope.invoiceNo,
+        Promo: $scope.promo,
+        Lock: $scope.lock
+      };
+    };
+    $scope.buildSetRequest = function() {
+      var req = $scope.buildBalanceRequest();
+      delete req.Identifier;
+      req.NewIdentifier = $scope.identifier;
+      req.Lock = $scope.lock;
+      req.CreditLimit = $scope.creditLimit;
+      return req;
     };
     $scope.buildSaleRequest = function(){
       var req = $scope.buildBalanceRequest();
       req.Amount = $scope.amount;
+      if($scope.showAdvanced){
+        req.Identifier = $scope.identifier;
+        req.OverrideCVV = $scope.overwriteCVV;
+        req.InvoiceNo = $scope.InvoiceNo;
+      }
       return req;
     };
     $scope.buildLoadRequest = function() {
-      return $scope.buildSaleRequest();
+      var req =  $scope.buildSaleRequest();
+      if($scope.showAdvanced){
+        req.Promo = $scope.promo;
+      }
+      return req;
     };
     $scope.showVoidButton = function(r){
       return r.Voided == false && (r.Operation == 'Sale' || r.Operation == 'Load');

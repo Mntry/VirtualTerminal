@@ -95,7 +95,7 @@ app.service('$swiperFactory',['$http', '$rootScope', '$localStorage', function($
   secuRedKeyboard.display = 'SREDKey';
 
   var secureRed = new baseSwiper();
-  secureRed.display = "SecuRed";
+  secureRed.display = "SecuRED";
   secureRed.showManual = true;
 
   var swipers = {
