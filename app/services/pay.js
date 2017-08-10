@@ -1,5 +1,5 @@
 app.service('$pay', ['$http', '$rootScope', '$localStorage', function($http, $rootScope, $localStorage){
-	var buildSuccessHandler = function(callback, suppressNotification){
+	var buildSuccessHandler = function(callback, suppressNotification, tranType){
 		return function(response){
 			if(!suppressNotification)
 			{
@@ -10,6 +10,7 @@ app.service('$pay', ['$http', '$rootScope', '$localStorage', function($http, $ro
 			$rootScope.showProgress = false;
 			if(callback)
 			{
+				response.data.tranType = tranType;
 				callback({content: response.data, isSuccessful: true});
 			}
 		};
@@ -37,7 +38,7 @@ app.service('$pay', ['$http', '$rootScope', '$localStorage', function($http, $ro
 		 'Authorization': $localStorage.config().secret,
 		 'Content-Type': 'application/json'
 	 };
-	this.processCredit = function (payload, callback, suppressNotification){
+	this.processSale = function (payload, callback, suppressNotification){
 		headers.Authorization = $localStorage.config().secret;
 		$rootScope.showProgress = true;
 		$http({
@@ -45,7 +46,7 @@ app.service('$pay', ['$http', '$rootScope', '$localStorage', function($http, $ro
 			url: $localStorage.config().url + 'credit/sale/',
 			data: JSON.stringify(payload),
 			headers: headers
-		}).then(buildSuccessHandler(callback, suppressNotification),
+		}).then(buildSuccessHandler(callback, suppressNotification, 'Sale'),
 						buildFailureHandler(callback, suppressNotification));
 
 	};
@@ -58,5 +59,15 @@ app.service('$pay', ['$http', '$rootScope', '$localStorage', function($http, $ro
 			data: JSON.stringify(payload),
 			headers: headers
 		}).then(buildSuccessHandler(callback, suppressNotification), buildFailureHandler(callback, suppressNotification));
+	};
+	this.processReturn = function(payload, callback, suppressNotification) {
+		headers.Authorization = $localStorage.config().secret;
+		$rootScope.showProgress = true;
+		$http({
+			method: 'POST',
+			url: $localStorage.config().url + 'credit/return',
+			data: JSON.stringify(payload),
+			headers: headers
+		}).then(buildSuccessHandler(callback, suppressNotification, 'Return'), buildFailureHandler(callback, suppressNotification));
 	};
 }]);
