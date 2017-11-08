@@ -86,12 +86,23 @@ function($rootScope, $scope, $localStorage, $pay) {
 
 
 	$scope.bulkProcess = function(accountsToProcess) {
+		var filteredList = accountsToProcess.filter(function(account){return account.selected;});
+		if(filteredList == 0)
+		{
+			$rootScope.showError("At least one account must be selected.");
+			return;
+		}
+
 		$scope.processing = true;
 		var failures = [];
 		var successCount = 0;
 		var processedCount = 0;
-		for(let i = 0; i < accountsToProcess.length; i++){
-			var account = accountsToProcess[i];
+
+		for(let i = 0; i < filteredList.length; i++){
+			var account = filteredList[i];
+			if(account.selected == false){
+				continue; //skip account!
+			}
 			var payload = {
 				Token: account.token,
 				Amount: account.amount,
@@ -114,10 +125,11 @@ function($rootScope, $scope, $localStorage, $pay) {
 					var refNo = response.content.RefNo || ("noRefNo"+curAccount[0].history.length);
 					curAccount[0].history.unshift({amount:response.content.Amount, processedDate: Date.now(), refNo: refNo});
 				}
-				if(processedCount == accountsToProcess.length){
-					if(failures.length == 0){
+				if(processedCount == filteredList.length){
+					if(successCount > 0){
 						$rootScope.showSuccess("Successfully processed " + successCount + " transactions");
-					}else{
+					}
+					if (failures.length > 0){
 						for(let f = 0; f < failures.length; f++){
 							var curFail = failures[f];
 							$rootScope.showError(curFail.formattedMsg);
@@ -130,6 +142,12 @@ function($rootScope, $scope, $localStorage, $pay) {
 		}
 
 	};
+
+	$scope.$watch('selectAll', function(newVal, oldVal){
+		angular.forEach($scope.savedAccounts, function(itm){
+			itm.selected = newVal;
+		});
+	});
 
 	$scope.saveAmountChanges = function(suppressNotification) {
 			$localStorage.save('savedAccounts', $scope.savedAccounts);
@@ -181,10 +199,9 @@ function($rootScope, $scope, $localStorage, $pay) {
 		  }
 	};
 	$scope.importBackup = function() {
-
 		var backupData = [];
 		try{
-			backupData = JSON.parse($scope.backupContents);
+			backupData = $scope.selectedBackup;
 			if (!Array.isArray(backupData)){
 				throw "backup data is not a json array!";
 			}
