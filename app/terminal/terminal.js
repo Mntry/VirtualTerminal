@@ -29,6 +29,12 @@ function($scope, $pay, $sv) {
   $scope.$watch('mode', function(newVal, oldVal){
     $scope.swipeEnabled = (newVal)&&newVal == 'Swipe';
   });
+  $scope.$watch('op', function(newVal, oldVal){
+    if($scope.showEntryModeToggle && newVal == 'Gift' && $scope.mode == 'Token')
+    {
+      $scope.mode = 'Manual';
+    }
+  });
 
   $scope.submitRequest = function(){
     var msg = $scope.request;
@@ -39,11 +45,18 @@ function($scope, $pay, $sv) {
       sessionStorage.setItem('terminalResponses', JSON.stringify($scope.responses));
     };
     if($scope.op == "Credit"){
-      if($scope.request.Account && $scope.request.Account.indexOf("*") != -1){
+      if($scope.mode !== 'Manual'){
         delete $scope.request.Account;
         delete $scope.request.Expiration;
       }
-
+      if($scope.mode !== 'Token'){
+        delete $scope.request.Token;
+      }
+      if($scope.mode !== 'Swipe'){
+        delete $scope.request.Track2;
+        delete $scope.request.AccountKey;
+        delete $scope.request.EncryptedAccount;
+      }
       $pay['process'+$scope.tranType](msg, function(response){
         if (response.isSuccessful){
           successResponse(response);
