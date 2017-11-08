@@ -96,7 +96,9 @@
           </thead>
           <tbody>
             <tr ng-class="{shown: r.showHistory}" ng-repeat-start="r in savedAccounts track by r.token">
-              <td> <input type="checkbox" ng-model="r.selected"/>
+              <td style="text-overflow:clip;">
+                <input type="checkbox" ng-model="r.selected"/>
+              </td>
               <td class="v-align-middle semi-bold" ng-click="r.showHistory = !(r.showHistory);">{{r.alias}}</td>
               <td class="v-align-middle bold">{{r.lastProcessedDate | date:'MM/dd/yyyy @ h:mma'}}</td>
               <td class="v-align-middle">
@@ -109,7 +111,7 @@
               </td>
             </tr>
             <tr ng-show="r.showHistory" class="row-details" ng-click="r.showHistory = !(r.showHistory);">
-              <td colspan="3">
+              <td colspan="4">
                 <h5>History for card: {{r.account}}</h5>
                 <table class="table table-inline history-table">
                   <tr ng-repeat="h in r.history track by h.refNo">
@@ -122,7 +124,7 @@
               </td>
             </tr>
             <tr ng-repeat-end ng-show="r.showHistory">
-              <td colspan="3" style="text-align:right;" class="btn-close-me">
+              <td colspan="4" style="text-align:right;" class="btn-close-me">
                 <button ng-click="r.showHistory = false" class="btn btn-complete btn-xs">Close</button>
               </td>
             </tr>
