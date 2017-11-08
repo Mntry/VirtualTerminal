@@ -72,7 +72,7 @@
     </p>
 
     <span ng-show="processing">Input disabled while processing...</span>
-    <button  ng-hide="!savedAccounts || savedAccounts.length == 0 || processing" ng-click="saveAndBulkProcess(savedAccounts)" class="btn btn-primary btn-block m-t-10">Process</button>
+    <button  ng-hide="!savedAccounts || savedAccounts.length == 0 || processing" ng-click="saveAndBulkProcess(savedAccounts)" class="btn btn-primary btn-block m-t-10">Process Selected Accounts</button>
 
     <hr />
     <h5 class="m-t-20">Accounts</h5>
@@ -88,13 +88,15 @@
         <table class="table table-hover table-condensed table-detailed dataTable no-footer" role="grid" ng-show="savedAccounts.length > 0">
           <thead>
             <tr role="row">
+              <th style="" class="sorting_disabled"> <input type="checkbox" ng-model="selectAll" style="margin-left:20px;" />
               <th style="" class="sorting_disabled" rowspan="1" colspan="1">Alias</th>
               <th style="" class="sorting_disabled" rowspan="1" colspan="1">Last Processed</th>
               <th style="" class="sorting_disabled" rowspan="1" colspan="1">Recurring</th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-class="{shown: r.showHistory}" ng-repeat-start="r in savedAccounts">
+            <tr ng-class="{shown: r.showHistory}" ng-repeat-start="r in savedAccounts track by r.token">
+              <td> <input type="checkbox" ng-model="r.selected"/>
               <td class="v-align-middle semi-bold" ng-click="r.showHistory = !(r.showHistory);">{{r.alias}}</td>
               <td class="v-align-middle bold">{{r.lastProcessedDate | date:'MM/dd/yyyy @ h:mma'}}</td>
               <td class="v-align-middle">
@@ -110,7 +112,7 @@
               <td colspan="3">
                 <h5>History for card: {{r.account}}</h5>
                 <table class="table table-inline history-table">
-                  <tr ng-repeat="h in r.history">
+                  <tr ng-repeat="h in r.history track by h.refNo">
                     <td>{{h.amount}}</td>
                     <td>{{h.processedDate | date:'MM/dd/yyyy @ h:mma'}}</td>
                   </tr>
@@ -133,8 +135,11 @@
 
 </div>
 <div ng-show="mode=='import'">
-  <p>copy contents of your 'BulkProcessingBackup.json' file into the textbox below, and click Import</p>
-  <textarea ng-model="backupContents" style="width:100%;"></textarea>
+  <p>Select a JSON backup file and click Import.</p>
+  <div class="control-group form-group-default">
+    <label>Select Backup File</label>
+    <input type="file" json-reader results="selectedBackup" class="form-controll" />
+  </div>
   <button class="btn btn-primary btn-cons m-t-10" ng-click="importBackup()">Import</button>
   <button ng-click="mode = 'process'" class="btn btn-danger btn-cons m-t-10">Cancel</button>
 </div>
