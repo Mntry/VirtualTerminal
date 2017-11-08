@@ -100,9 +100,6 @@ function($rootScope, $scope, $localStorage, $pay) {
 
 		for(let i = 0; i < filteredList.length; i++){
 			var account = filteredList[i];
-			if(account.selected == false){
-				continue; //skip account!
-			}
 			var payload = {
 				Token: account.token,
 				Amount: account.amount,
@@ -224,6 +221,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 			return;
 		}
 		$scope.savedAccounts = backupData;
+		$scope.selectAll = false;
 		$scope.saveAmountChanges();
 		$scope.mode = 'process'
 	};
