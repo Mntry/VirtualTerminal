@@ -1,4 +1,4 @@
-# Monetary Virtual Terminal ![Codacy Badge](https://api.codacy.com/project/badge/Grade/10d3c08285db4c1d87cf524a7badc48c) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Mntry/VirtualTerminal/blob/master/LICENSE)
+# Monetary Virtual Terminal [![Codacy Badge](https://api.codacy.com/project/badge/Grade/10d3c08285db4c1d87cf524a7badc48c)](https://www.codacy.com/app/Monetary/VirtualTerminal/dashboard) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Mntry/VirtualTerminal/blob/master/LICENSE)
 
 Monetary's open source AngularJS Virtual Terminal.
 
