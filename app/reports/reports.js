@@ -28,14 +28,14 @@ function($scope, $rpt) {
   $scope.$watch('selectedOperationName', function(newValue, oldValue){
     $scope.reportData = [];
     $scope.reportHeaders = [];
-    if(newValue == '' || newValue == null){
+    if(newValue === '' || newValue === null){
       $scope.selectedOperation = null;
       return;
     }
     $scope.selectedOperation = $scope.reports.filter(function(r){
-      return r.operationId == newValue;
+      return r.operationId === newValue;
     })[0];
-    if($scope.selectedOperation.parameters.length == 0){
+    if($scope.selectedOperation.parameters.length === 0){
       $scope.getReportData();
     }
   });
@@ -48,9 +48,13 @@ function($scope, $rpt) {
   };
 
   $scope.showReport = function(rpt, selectedOperationName){
-    if(rpt.path.indexOf('Groups/{id}') == -1) return true;
-    var idParam = rpt.parameters.filter(function(p){return p.name == 'id';});
-    if(idParam.length == 0) return true;
+    if(rpt.path.indexOf('Groups/{id}') === -1){
+       return true;
+     }
+    var idParam = rpt.parameters.filter(function(p){return p.name === 'id';});
+    if(idParam.length === 0) {
+      return true;
+    }
     return idParam[0].options.length > 0;
 
   };

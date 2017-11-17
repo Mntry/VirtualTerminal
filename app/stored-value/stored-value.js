@@ -23,7 +23,7 @@ function($scope, $sv) {
       $scope.invoiceNo = '';
       $scope.identifier = '';
       $scope.creditLimit = '';
-      if($scope.op == 'Create'){
+      if($scope.op === 'Create'){
         $scope.account = '';
       }
     };
@@ -43,7 +43,7 @@ function($scope, $sv) {
           var result = response.content;
           result.Operation = op;
           result.Voided = false;
-          if(op == 'Balance'){
+          if(op === 'Balance'){
             result.Amount = result.Balance;
           }
           else{
@@ -103,8 +103,8 @@ function($scope, $sv) {
       return req;
     };
     $scope.showVoidButton = function(r){
-      return r.Voided == false && (r.Operation == 'Sale' || r.Operation == 'Load');
-    }
+      return r.Voided === false && (r.Operation === 'Sale' || r.Operation === 'Load');
+    };
     $scope.voidStoredValue = function(originalResponse) {
       $sv.void(originalResponse.RefNo, function(response){
         if(!response.isSuccessful){
@@ -118,7 +118,7 @@ function($scope, $sv) {
     };
 
     $scope.$on('$locationChangeStart', function(event){
-      if ($scope.responses.length == 0){
+      if ($scope.responses.length === 0){
         return;
       }
       sessionStorage.setItem('svResponses', JSON.stringify($scope.responses));

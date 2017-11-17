@@ -22,8 +22,8 @@ function($rootScope, $scope, $localStorage, $swiperFactory) {
       var values = Object.getOwnPropertyNames($scope);
       for (var i = 0; i < values.length; i++){
         var key =  values[i];
-        if(key.indexOf("$") == 0
-        || typeof($scope[key]) == 'function'
+        if(key.indexOf("$") === 0
+        || typeof($scope[key]) === 'function'
         || Array.isArray($scope[key])){
           continue;
         }
@@ -31,8 +31,8 @@ function($rootScope, $scope, $localStorage, $swiperFactory) {
       }
       var config = $localStorage.config(config);
       $rootScope.config = config;
-      for(var key in config) {
-        $scope[key] = config[key];
+      for(var k in config) {
+        $scope[k] = config[k];
       }
     };
 

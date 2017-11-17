@@ -55,7 +55,7 @@ app.controller("TabCtrl", ['$scope', '$location', function($scope, $location){
 	});
 	$scope.classes = function(newTab, curTab){
 		var cls = "btn btn-default btn-tab";
-		if (newTab == curTab){
+		if (newTab === curTab){
 			cls += " active";
 		}
 		return cls;
@@ -66,7 +66,7 @@ app.run(function($rootScope, $localStorage, $location){
 		$rootScope.showProgress = false;
 		$rootScope.config = $localStorage.config();
 		//initializing scope
-		if (!$rootScope.config.secret || $rootScope.config.secret == ''){
+		if (!$rootScope.config.secret || $rootScope.config.secret === ''){
 			$rootScope.config = {
 				url: '',
 				reportingUrl: '',

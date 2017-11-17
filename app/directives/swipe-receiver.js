@@ -19,14 +19,14 @@ app.directive('swipeReceiver', ['$document', '$timeout', '$swiperFactory', funct
             scope.swipeMessage = "";
             scope.account = "";
           };
-          scope.convertStrToBit
+
           scope.validateSwipe = function() {
             if(scope.rawSwipe.length < 16){
               return false;
             }
 
-            if( scope.rawSwipe.substr(0, 2) != "02"
-              || scope.rawSwipe.substr(scope.rawSwipe.length-2, 2) != "03"){
+            if( scope.rawSwipe.substr(0, 2) !== "02"
+              || scope.rawSwipe.substr(scope.rawSwipe.length-2, 2) !== "03"){
               return false;
             }
             return true;
@@ -59,13 +59,13 @@ app.directive('swipeReceiver', ['$document', '$timeout', '$swiperFactory', funct
           });
           $document.on('keypress', function(event) {
             var elementType = event.currentTarget.activeElement.type;
-            if(!scope.enableSwipe || (elementType && elementType != "")){
+            if(!scope.enableSwipe || (elementType && elementType !== "")){
               return; // ignore until expression returns true
             }
-            if(scope.rawSwipe == ''){
+            if(scope.rawSwipe === ''){
               scope.swipeMessage = "Processing Swipe...";
               $timeout(function() {
-                if(scope.enableSwipe == false){
+                if(scope.enableSwipe === false){
                   return; // return char was captured
                 }
                 if(scope.validateSwipe()){
@@ -78,7 +78,7 @@ app.directive('swipeReceiver', ['$document', '$timeout', '$swiperFactory', funct
             }
 
             event.preventDefault();
-            if(event.which == 13) { // On ENTER submit parent form
+            if(event.which === 13) { // On ENTER submit parent form
               if(scope.validateSwipe()){
                 scope.parseRawSwipe();
                 scope.$apply();
@@ -87,7 +87,7 @@ app.directive('swipeReceiver', ['$document', '$timeout', '$swiperFactory', funct
               scope.clearForm();
               scope.swipeMessage = "Error trying to swipe. Please try again.";
             } else if(event.which == 27) {
-              clearForm();
+              scope.clearForm();
               scope.enableSwipe = false;
             } else {
               scope.rawSwipe += String.fromCharCode(event.which);
@@ -95,7 +95,7 @@ app.directive('swipeReceiver', ['$document', '$timeout', '$swiperFactory', funct
             scope.$apply();
           });
         }
-      }
+      };
     }
   ]
 );
