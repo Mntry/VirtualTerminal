@@ -14,7 +14,7 @@ app.service('$localStorage', function(){
   this.config = function(newConfig){
     var result = self.get('config')||{};
     if(newConfig){
-      for(field in newConfig){
+      for(var field in newConfig){
         result[field] = newConfig[field];
       }
     }else{
@@ -36,7 +36,7 @@ app.service('$localStorage', function(){
       result.reportingUrl = "https://reporting-cert.monetary.co";
       result.engageUrl = "https://engage-cert.monetary.co/V1/";
       result.receiptUrl = "https://o-cert.monetary.co/";
-    }else if (secret == ''){
+    }else if (secret === ''){
       result.url = null;
       result.reportingUrl = null;
       result.engageUrl = null;
