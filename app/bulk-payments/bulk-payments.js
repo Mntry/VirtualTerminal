@@ -88,31 +88,6 @@ function($rootScope, $scope, $localStorage, $pay) {
 	var failures = [];
 	var successCount = 0;
 	var filteredList = [];
-	$scope.bulkProcess = function(accountsToProcess) {
-		filteredList = accountsToProcess.filter(function(account){return account.selected;});
-		if(filteredList === 0)
-		{
-			$rootScope.showError("At least one account must be selected.");
-			return;
-		}
-
-		$scope.processing = true;
-		processedCount = 0;
-		failures = [];
-		successCount = 0;
-		for(let i = 0; i < filteredList.length; i++){
-			var account = filteredList[i];
-			var payload = {
-				Token: account.token,
-				Amount: account.amount,
-			};
-			if (account.zip && account.zip.length > 0){
-				payload.Zip = account.zip;
-			}
-			$pay.processSale(payload, handleProcessResponse, true);
-		}
-
-	};
 	var handleProcessResponse = function(response){
 		processedCount++;
 		if(response.isSuccessful){
@@ -141,6 +116,33 @@ function($rootScope, $scope, $localStorage, $pay) {
 			$scope.saveAmountChanges(true);
 		}
 	};
+
+	$scope.bulkProcess = function(accountsToProcess) {
+		filteredList = accountsToProcess.filter(function(account){return account.selected;});
+		if(filteredList === 0)
+		{
+			$rootScope.showError("At least one account must be selected.");
+			return;
+		}
+
+		$scope.processing = true;
+		processedCount = 0;
+		failures = [];
+		successCount = 0;
+		for(let i = 0; i < filteredList.length; i++){
+			var account = filteredList[i];
+			var payload = {
+				Token: account.token,
+				Amount: account.amount,
+			};
+			if (account.zip && account.zip.length > 0){
+				payload.Zip = account.zip;
+			}
+			$pay.processSale(payload, handleProcessResponse, true);
+		}
+
+	};
+
 
 	$scope.$watch('selectAll', function(newVal, oldVal){
 		angular.forEach($scope.savedAccounts, function(itm){

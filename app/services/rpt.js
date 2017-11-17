@@ -49,7 +49,7 @@ app.service('$rpt',['$http', '$rootScope', '$localStorage', function($http, $roo
       p.formattedName = p.name.replace(/([A-Z])/g, ' $1')
         .replace(/^./, function(str){ return str.toUpperCase(); })
         .trim();
-      if(p.name === 'id' && rpt.path.indexOf("Groups/{id}") != -1){
+      if(p.name === 'id' && rpt.path.indexOf("Groups/{id}") !== -1){
           p.formattedName = "Group " + p.formattedName;
           p.needsGroups = true;
       }
