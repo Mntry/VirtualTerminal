@@ -86,7 +86,7 @@ app.directive('swipeReceiver', ['$document', '$timeout', '$swiperFactory', funct
               }
               scope.clearForm();
               scope.swipeMessage = "Error trying to swipe. Please try again.";
-            } else if(event.which == 27) {
+            } else if(event.which === 27) {
               scope.clearForm();
               scope.enableSwipe = false;
             } else {

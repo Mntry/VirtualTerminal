@@ -96,7 +96,7 @@ app.service('$rpt',['$http', '$rootScope', '$localStorage', function($http, $roo
   // build header user in getReportData
   var buildHeaders = function(data){
     var result = [];
-    if (data.length == 0){
+    if (data.length === 0){
         return [];
     }
     for(var field in data[0]){

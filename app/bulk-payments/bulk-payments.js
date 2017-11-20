@@ -96,7 +96,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 		else{
 			failures.push(response);
 		}
-		var curAccount = $scope.savedAccounts.filter(function(a){return a.token == response.content.Token});
+		var curAccount = $scope.savedAccounts.filter(function(a){return a.token === response.content.Token;});
 		if(curAccount.length > 0){
 			curAccount[0].lastProcessedDate = Date.now();
 			var refNo = response.content.RefNo || ("noRefNo"+curAccount[0].history.length);
@@ -152,7 +152,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 
 	$scope.saveAmountChanges = function(suppressNotification) {
 			$localStorage.save('savedAccounts', $scope.savedAccounts);
-			if(typeof(suppressNotification) === 'undefined' || suppressNotification == false)
+			if(typeof(suppressNotification) === 'undefined' || suppressNotification === false)
 			{
 				$rootScope.showSuccess("Saved Amount Changes");
 			}
@@ -165,7 +165,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 
 	$scope.backup = function() {
 			var filename = 'BulkProcessingBackup.json';
-			var data = JSON.stringify($scope.savedAccounts, undefined, 2);
+			var data = JSON.stringify($scope.savedAccounts, null, 2);
 		  var blob = new Blob([data], {type: 'text/json'});
 
 		  // FOR IE:
@@ -213,7 +213,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 		$scope.savedAccounts = backupData;
 		$scope.selectAll = false;
 		$scope.saveAmountChanges();
-		$scope.mode = 'process'
+		$scope.mode = 'process';
 	};
 
 }]);

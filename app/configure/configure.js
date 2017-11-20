@@ -11,9 +11,9 @@ angular.module('myApp.configure', ['ngRoute'])
 
 .controller('ConfigureCtrl', ['$rootScope', '$scope', '$localStorage', '$swiperFactory',
 function($rootScope, $scope, $localStorage, $swiperFactory) {
-    var config = $localStorage.config();
-    for(var key in config) {
-      $scope[key] = config[key];
+    var cfg = $localStorage.config();
+    for(var key in cfg) {
+      $scope[key] = cfg[key];
     }
 
     $scope.secretType = 'password';
@@ -41,8 +41,8 @@ function($rootScope, $scope, $localStorage, $swiperFactory) {
     $scope.swipers = $swiperFactory.getListOfSwipers();
 
     $scope.saveConfig = function(){
-      if($scope.secret && $scope.secret != ''){
-        $scope.showSwiper =  $scope.selectedSwiper != 'None';
+      if($scope.secret && $scope.secret !== ''){
+        $scope.showSwiper =  $scope.selectedSwiper !== 'None';
         var swiper = $swiperFactory.getSwiper($scope.selectedSwiper) || {showManual: true};
         $scope.showManual = swiper.showManual;
         storeConfig();
