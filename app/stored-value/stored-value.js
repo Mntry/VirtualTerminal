@@ -110,7 +110,7 @@ function($scope, $sv) {
         if(!response.isSuccessful){
           return;
         }
-        response.content.Operation = 'Void'
+        response.content.Operation = 'Void';
         $scope.responses.unshift(response.content);
 
         originalResponse.Voided = true;

@@ -43,7 +43,7 @@ function($scope, $pay, $sv) {
       $scope.responses.unshift(response.content);
       sessionStorage.setItem('terminalResponses', JSON.stringify($scope.responses));
     };
-    if($scope.op == "Credit"){
+    if($scope.op === "Credit"){
       if($scope.mode !== 'Manual'){
         delete $scope.request.Account;
         delete $scope.request.Expiration;

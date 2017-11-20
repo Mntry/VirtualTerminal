@@ -65,7 +65,7 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
       var conditionalfields = field.split('||');
       var isConditionValid = true;
       //at least one of the || fields needs a value
-      var allConditionalFieldsAreEmpty =  (conditionalfields.filter(function(f){return !isNullOrEmpty(payload[f]);}).length == 0);
+      var allConditionalFieldsAreEmpty =  (conditionalfields.filter(function(f){return !isNullOrEmpty(payload[f]);}).length === 0);
       if(allConditionalFieldsAreEmpty){
         $rootScope.showError('At least one of the following is required: ' + conditionalfields.join() + '.');
       }
@@ -138,7 +138,7 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
       data: JSON.stringify(payload),
       headers: headers
     }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
-  }
+  };
   this.void = function(refNo, callback){
     $rootScope.showProgress = true;
     headers.Authorization = $localStorage.config().secret;
