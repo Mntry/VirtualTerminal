@@ -41,11 +41,11 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
 		};
 	};
   var validatePayload = function(payload, fieldsToValidate){
-    if (typeof(fieldsToValidate) == 'undefined'){
+    if (typeof(fieldsToValidate) === 'undefined'){
       fieldsToValidate = ['Amount', 'Account'];
     }
-    var shouldValidate = function(field)  {return fieldsToValidate.indexOf(field) != -1;};
-    var isNullOrEmpty = function(val) {return (!val || val.trim() == '');};
+    var shouldValidate = function(field)  {return fieldsToValidate.indexOf(field) !== -1;};
+    var isNullOrEmpty = function(val) {return (!val || val.trim() === '');};
     var validate = function(field){
       if(shouldValidate(field) && isNullOrEmpty(payload[field])){
         $rootScope.showError('invalid ' + field.toLowerCase());
@@ -59,13 +59,13 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
     isValid = isValid && validate('Identifier');
     isValid = isValid && validate('NewIdentifier');
     //only fields that contain '||'
-    var conditionalReqirements = fieldsToValidate.filter(function(field){return (field.indexOf('||') > -1)});
+    var conditionalReqirements = fieldsToValidate.filter(function(field){return (field.indexOf('||') > -1);});
     for(var i = 0; i < conditionalReqirements.length; i++){
       var field = conditionalReqirements[i];
       var conditionalfields = field.split('||');
       var isConditionValid = true;
       //at least one of the || fields needs a value
-      var allConditionalFieldsAreEmpty =  (conditionalfields.filter(function(f){return !isNullOrEmpty(payload[f]);}).length == 0);
+      var allConditionalFieldsAreEmpty =  (conditionalfields.filter(function(f){return !isNullOrEmpty(payload[f]);}).length === 0);
       if(allConditionalFieldsAreEmpty){
         $rootScope.showError('At least one of the following is required: ' + conditionalfields.join() + '.');
       }
@@ -85,7 +85,7 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
       data: JSON.stringify(payload),
       headers:headers
     }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
-  }
+  };
   this.set = function(payload, callback) {
     if(!validatePayload(payload, ['Account||Identifier', 'NewIdentifier||Lock||CreditLimit'])){
       return;
@@ -138,7 +138,7 @@ app.service('$sv',['$http', '$rootScope', '$localStorage', function($http, $root
       data: JSON.stringify(payload),
       headers: headers
     }).then(buildSuccessHandler(callback), buildFailureHandler(callback));
-  }
+  };
   this.void = function(refNo, callback){
     $rootScope.showProgress = true;
     headers.Authorization = $localStorage.config().secret;

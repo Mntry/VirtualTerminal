@@ -2,13 +2,13 @@ app.service('$swiperFactory',['$http', '$rootScope', '$localStorage', function($
 
   // Beginning of swipers
   var roundToByte = function(length) {
-    if(length % 8 == 0){
+    if(length % 8 === 0){
       return length;
     }
     return length + (8-(length % 8));
   };
 
-  var baseSwiper = function(){
+  var BaseSwiper = function(){
     this.showManual = false;
     this.parseRawSwipe = function(rawSwipe) {
       var result = {
@@ -65,7 +65,7 @@ app.service('$swiperFactory',['$http', '$rootScope', '$localStorage', function($
       track2 = raw.substr(start, track2Length);
       start += track2Length;
       track3 = raw.substr(start, track3Length);
-      if(hashBits[0] == "1"){ //hashbits[0] == KSN included?
+      if(hashBits[0] === "1"){ //hashbits[0] == KSN included?
         start += track3Length;
         encTrk1 = raw.substr(start, encTrk1Length);
         start += encTrk1Length;
@@ -78,11 +78,11 @@ app.service('$swiperFactory',['$http', '$rootScope', '$localStorage', function($
       }
 
       var account = track2.substr(0, track2.indexOf("?"));
-      if(track2.indexOf("=") != -1){
+      if(track2.indexOf("=") !== -1){
         account = track2.substr(0, track2.indexOf("="));
       }
       account = account.replace(";", "");
-      if (account == ''){
+      if (account === ''){
         result.swipeMessage = "Failed to read the card correctly. Please try agian.";
         return result;
       }
@@ -91,10 +91,10 @@ app.service('$swiperFactory',['$http', '$rootScope', '$localStorage', function($
       return result;
     };
   };
-  var secuRedKeyboard = new baseSwiper();
+  var secuRedKeyboard = new BaseSwiper();
   secuRedKeyboard.display = 'SREDKey';
 
-  var secureRed = new baseSwiper();
+  var secureRed = new BaseSwiper();
   secureRed.display = "SecuRED";
   secureRed.showManual = true;
 
@@ -105,7 +105,7 @@ app.service('$swiperFactory',['$http', '$rootScope', '$localStorage', function($
   // END OF SWIPERS
   this.getSwiper = function(selectedSwiper){
     selectedSwiper = selectedSwiper || $localStorage.config().selectedSwiper;
-    if(!selectedSwiper || selectedSwiper == 'None'){
+    if(!selectedSwiper || selectedSwiper === 'None'){
       return null;
     }
 

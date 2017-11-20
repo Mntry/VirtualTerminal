@@ -27,24 +27,23 @@ function($scope, $pay, $sv) {
   $scope.request = $scope.request||{}; //fields will be added via angular!
   $scope.swipeEnabled = false;
   $scope.$watch('mode', function(newVal, oldVal){
-    $scope.swipeEnabled = (newVal)&&newVal == 'Swipe';
+    $scope.swipeEnabled = (newVal)&&newVal === 'Swipe';
   });
   $scope.$watch('op', function(newVal, oldVal){
-    if($scope.showEntryModeToggle && newVal == 'Gift' && $scope.mode == 'Token')
+    if($scope.showEntryModeToggle && newVal === 'Gift' && $scope.mode === 'Token')
     {
       $scope.mode = 'Manual';
     }
   });
 
   $scope.submitRequest = function(){
-    var msg = $scope.request;
     var successResponse = function(response){
       $scope.request = {};
       $scope.mode = 'Manual';
       $scope.responses.unshift(response.content);
       sessionStorage.setItem('terminalResponses', JSON.stringify($scope.responses));
     };
-    if($scope.op == "Credit"){
+    if($scope.op === "Credit"){
       if($scope.mode !== 'Manual'){
         delete $scope.request.Account;
         delete $scope.request.Expiration;
@@ -57,12 +56,12 @@ function($scope, $pay, $sv) {
         delete $scope.request.AccountKey;
         delete $scope.request.EncryptedAccount;
       }
-      $pay['process'+$scope.tranType](msg, function(response){
+      $pay['process'+$scope.tranType]($scope.request, function(response){
         if (response.isSuccessful){
           successResponse(response);
         }
       });
-    }else if ($scope.op == "Gift"){
+    }else if ($scope.op === "Gift"){
       var msg = {
         Amount: $scope.request.Amount,
         Account: $scope.request.Account,

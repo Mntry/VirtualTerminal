@@ -25,7 +25,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 	$scope.swiperMode = 'Credit';
 	$scope.swipeEnabled = true;
 	$scope.authAndAddCard = function (){
-		if($scope.mode == 'process'){
+		if($scope.mode === 'process'){
 			return; //user clicked cancel
 		}
 		var authData = $scope.request;
@@ -46,8 +46,8 @@ function($rootScope, $scope, $localStorage, $pay) {
 			}
 			var content = response.content;
 			var matchingAccounts = $scope.savedAccounts.filter(function(a){
-				return a.token == content.Token || a.alias == alias;
-			})
+				return a.token === content.Token || a.alias === alias;
+			});
 			if (matchingAccounts.length > 0)
 			{
 				var index = $scope.savedAccounts.indexOf(matchingAccounts[0]);
@@ -84,20 +84,51 @@ function($rootScope, $scope, $localStorage, $pay) {
 		$localStorage.save('savedAccounts', $scope.savedAccounts);
 	};
 
+	var processedCount = 0;
+	var failures = [];
+	var successCount = 0;
+	var filteredList = [];
+	var handleProcessResponse = function(response){
+		processedCount++;
+		if(response.isSuccessful){
+			successCount++;
+		}
+		else{
+			failures.push(response);
+		}
+		var curAccount = $scope.savedAccounts.filter(function(a){return a.token === response.content.Token;});
+		if(curAccount.length > 0){
+			curAccount[0].lastProcessedDate = Date.now();
+			var refNo = response.content.RefNo || ("noRefNo"+curAccount[0].history.length);
+			curAccount[0].history.unshift({amount:response.content.Amount, processedDate: Date.now(), refNo: refNo});
+		}
+		if(processedCount === filteredList.length){
+			if(successCount > 0){
+				$rootScope.showSuccess("Successfully processed " + successCount + " transactions");
+			}
+			if (failures.length > 0){
+				for(let f = 0; f < failures.length; f++){
+					var curFail = failures[f];
+					$rootScope.showError(curFail.formattedMsg);
+				}
+			}
+			$scope.processing = false;
+			$scope.saveAmountChanges(true);
+		}
+	};
 
 	$scope.bulkProcess = function(accountsToProcess) {
-		var filteredList = accountsToProcess.filter(function(account){return account.selected;});
-		if(filteredList == 0)
+		filteredList = accountsToProcess.filter(function(account){return account.selected;});
+		if(filteredList === 0)
 		{
 			$rootScope.showError("At least one account must be selected.");
 			return;
 		}
 
 		$scope.processing = true;
-		var failures = [];
-		var successCount = 0;
-		var processedCount = 0;
-
+		processedCount = 0;
+		failures = [];
+		successCount = 0;
 		for(let i = 0; i < filteredList.length; i++){
 			var account = filteredList[i];
 			var payload = {
@@ -107,38 +138,11 @@ function($rootScope, $scope, $localStorage, $pay) {
 			if (account.zip && account.zip.length > 0){
 				payload.Zip = account.zip;
 			}
-
-			$pay.processSale(payload, function(response){
-				processedCount++;
-				if(response.isSuccessful){
-					successCount++;
-				}
-				else{
-					failures.push(response);
-				}
-				var curAccount = $scope.savedAccounts.filter(function(a){return a.token == response.content.Token});
-				if(curAccount.length > 0){
-					curAccount[0].lastProcessedDate = Date.now();
-					var refNo = response.content.RefNo || ("noRefNo"+curAccount[0].history.length);
-					curAccount[0].history.unshift({amount:response.content.Amount, processedDate: Date.now(), refNo: refNo});
-				}
-				if(processedCount == filteredList.length){
-					if(successCount > 0){
-						$rootScope.showSuccess("Successfully processed " + successCount + " transactions");
-					}
-					if (failures.length > 0){
-						for(let f = 0; f < failures.length; f++){
-							var curFail = failures[f];
-							$rootScope.showError(curFail.formattedMsg);
-						}
-					}
-					$scope.processing = false;
-					$scope.saveAmountChanges(true);
-				}
-			}, true);
+			$pay.processSale(payload, handleProcessResponse, true);
 		}
 
 	};
+
 
 	$scope.$watch('selectAll', function(newVal, oldVal){
 		angular.forEach($scope.savedAccounts, function(itm){
@@ -148,7 +152,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 
 	$scope.saveAmountChanges = function(suppressNotification) {
 			$localStorage.save('savedAccounts', $scope.savedAccounts);
-			if(typeof(suppressNotification) === 'undefined' || suppressNotification == false)
+			if(typeof(suppressNotification) === 'undefined' || suppressNotification === false)
 			{
 				$rootScope.showSuccess("Saved Amount Changes");
 			}
@@ -161,21 +165,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 
 	$scope.backup = function() {
 			var filename = 'BulkProcessingBackup.json';
-			var data = $scope.savedAccounts;
-
-		  if (!data) {
-		    console.error('No data');
-		    return;
-		  }
-
-		  if (!filename) {
-		    filename = 'download.json';
-		  }
-
-		  if (typeof data === 'object') {
-		    data = JSON.stringify(data, undefined, 2);
-		  }
-
+			var data = JSON.stringify($scope.savedAccounts, null, 2);
 		  var blob = new Blob([data], {type: 'text/json'});
 
 		  // FOR IE:
@@ -207,7 +197,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 				if(typeof(account.token) !== 'string'){
 					throw "account at index " + i + " does not have a valid token";
 				}
-				if(typeof(account.amount) !== 'string' || parseFloat(account.amount) == "NaN"){
+				if(typeof(account.amount) !== 'string' || parseFloat(account.amount) === "NaN"){
 					throw "account at index " + i + " does not have a valid Amount";
 				}
 			}
@@ -223,7 +213,7 @@ function($rootScope, $scope, $localStorage, $pay) {
 		$scope.savedAccounts = backupData;
 		$scope.selectAll = false;
 		$scope.saveAmountChanges();
-		$scope.mode = 'process'
+		$scope.mode = 'process';
 	};
 
 }]);
