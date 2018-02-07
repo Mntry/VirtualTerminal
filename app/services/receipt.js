@@ -1,6 +1,6 @@
 app.service('$engage', ['$http', '$rootScope', '$localStorage', function($http, $rootScope, $localStorage){
 	$rootScope.config;
-	var buildResponseHandler = function(callback){
+	var buildResponseHandler = function(callback, isSuccessful){
 		return function(response, isSuccessful){
 			if(callback)
 			{

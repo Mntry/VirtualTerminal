@@ -1,0 +1,323 @@
+<h4>Enroll In Monetary Platforms</h4>
+<div class="row col-sm-12">
+    <a ng-click="wizardStep = 'Merchant';" ng-class="{'font-weight-bold': wizardStep == 'Merchant'}">Merchant</a>
+    <a ng-click="wizardStep = 'Contacts';" ng-class="{'font-weight-bold': wizardStep == 'Contacts'}"> > Contacts</a>
+    <a ng-click="wizardStep = 'Addresses';" ng-class="{'font-weight-bold': wizardStep == 'Addresses'}"> > Addresses</a>
+    <a ng-click="wizardStep = 'Processor';" ng-class="{'font-weight-bold': wizardStep == 'Processor'}" ng-show="enrollInProcessor"> > Processor</a>
+    <a ng-click="wizardStep = 'Schedule';" ng-class="{'font-weight-bold': wizardStep == 'Schedule'}" ng-show="enrollInSchedule"> > Schedule</a>
+    <a ng-click="wizardStep = 'TermsAndCondtions'" ng-class="{'font-weight-bold': wizardStep == 'TermsAndCondtions'}" > > Terms and Condtions</a>
+
+  <!-- <a ng-click="wizardKey = 'Merchant'" ng-class="{'active': }" >Merchant</a>
+  <a ng-click="wizardKey = 'Contacts'">-> Contacts</a> >
+  <a ng-click="wizardKey = 'Addresses'">-> Addresses</a> >
+  <a ng-click="wizardKey = 'Gateway'" ng-show="enrollInProcessor">-> Gateway</a>
+  <a ng-click="wizardKey = 'Schedule'">-> Schedule</a> > -->
+</div>
+<form ng-show="wizardStep === 'ApiKey'" ng-submit="setBoardingApiValues()" >
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="form-group form-group-default">
+        <label>Developer API Key</label>
+        <input type="text" placeholder="api123ABC456" ng-model="developerApiKeyInput" ng-required="!developerApiKeyInput"  class="form-control"  />
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary btn-cons m-t-10">Set Key</button>
+</form>
+<form ng-show="wizardStep === 'Merchant'" ng-submit="submitMerchant()">
+  <div class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Business Name</label>
+      <input type="text" ng-model="merchant.Name" placeholder="Bob's  Burgers" class="form-control" required />
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Phone Number</label>
+      <input type="text" ng-model="merchant.Phone" placeholder="555-569-8305" class="form-control" required />
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Website</label>
+      <input type="text" ng-model="merchant.Website" placeholder="www.BobsBurgers.com" class="form-control" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Timezone</label>
+      <select ng-model="merchant.Timezone" class="form-control" required>
+        <option>Eastern</option>
+        <option>Central</option>
+        <option>Mountain</option>
+        <option>Arizona</option>
+        <option>Pacific</option>
+        <option>Alaska</option>
+        <option>Hawaii</option>
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Reseller / Dealer</label>
+      <select ng-model="merchant.ResellerID" placeholder="555-569-8305" class="form-control">
+        <option ng-repeat="r in resellers" value={{r.ID}}>{{r.Name}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Products to Enroll</label>
+      <a class="btn btn-sm btn-default" ng-click="enrollInProcessor = !enrollInProcessor">
+        <i class="fa" ng-class="{'fa-check-square': enrollInProcessor, ' fa-square': !enrollInProcessor}">
+          Processor
+        </i>
+      </a>
+      <a class="btn btn-sm btn-default" ng-click="enrollInSchedule = !enrollInSchedule" ng-disabled="!enrollInProcessor" title="Schedule requires processor enrollemnt.">
+        <i class="fa" ng-class="{'fa-check-square': enrollInSchedule, ' fa-square': !enrollInSchedule}">
+          Sync Schedule
+        </i>
+      </a>
+    </div>
+  </div>
+    <button type="submit" class="btn btn-primary btn-block m-t-10" ng-disabled="!(enrollInProcessor || enrollInSchedule)" title="Select a product">Next Step</button>
+</form>
+<form ng-show="wizardStep === 'Contacts'" ng-submit="submitContacts()">
+  <div class="row" ng-repeat-start="contact in contacts">
+    <div class="form-group form-group-default col-sm-6">
+      <label>First Name</label>
+      <input type="text" ng-model="contact.FirstName" class="form-control" placeholder="Bob" required />
+    </div>
+    <div class="form-group form-group-default col-sm-6">
+      <label>Last Name</label>
+      <input type="text" ng-model="contact.LastName" class="form-control" placeholder="Blecher" required />
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group form-group-default col-sm-6">
+      <label>Phone Number</label>
+      <input type="tel" placeholder="(201) 368-7001" ng-model="contact.Phone" class="form-control" required />
+    </div>
+    <div class="form-group form-group-default col-sm-6">
+      <label>Email</label>
+      <input type="email" placeholder="bob@bobburgers.com" ng-model="contact.Email" class="form-control" required />
+    </div>
+  </div>
+  <div class="row" ng-repeat-end>
+    <div class="form-group form-group-default col-sm-12">
+      <label>Contact Type</label>
+      <select ng-model="contact.Type" class="form-control" required ng-disabled="$index == 0">
+        <option selected value="Owner">Owner</option>
+        <option value="Employee">Employee</option>
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group form-group-default col-sm-3">
+      <button class="btn btn-primary btn-block" ng-disabled="typeof(merchant.wasSuccessful) !== 'undefined'" ng-click="wizardStep =='Merchant'">Back</button>
+    </div>
+    <div class="form-group form-group-default col-sm-3">
+      <button class="btn btn-primary btn-block" ng-click="contacts.push({Type:'Employee'});">Add</button>
+    </div>
+    <div class="form-group form-group-default col-sm-3">
+      <button class="btn btn-primary btn-block" ng-click="contacts.pop();" ng-disabled="contacts.length == 1">Remove</button>
+    </div>
+    <div class="form-group form-group-default col-sm-3">
+      <button class="btn btn-primary btn-block" type="submit">Next</button>
+    </div>
+  </div>
+</form>
+<form ng-show="wizardStep === 'Addresses'" ng-submit="submitAddresses()">
+  <div class="row" ng-repeat-start="address in addresses">
+    <h5>{{address.Type}}</h5>
+  </div>
+  <div class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Street</label>
+      <input type="text" ng-model="address.Street" class="form-control" required />
+    </div>
+  </div>
+  <div class="row" ng-repeat-end>
+    <div class="form-group form-group-default col-sm-4">
+      <label>City</label>
+      <input type="text" ng-model="address.City" required class="form-control" required />
+    </div>
+    <div class="form-group form-group-default col-sm-4">
+      <label>State</label>
+      <input type="text" ng-model="address.State" required class="form-control" required />
+    </div>
+    <div class="form-group form-group-default col-sm-4">
+      <label>Postal Code</label>
+      <input type="text" ng-model="address.PostalCode" required class="form-control" required />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <button class="btn btn-block btn-primary" ng-click="wizardStep = 'Contacts';"> Back </button>
+    </div>
+    <div class="col-sm-6">
+      <button class="btn btn-primary btn-block" type="submit"> Next </button>
+    </div>
+  </div>
+</form>
+<form ng-show="wizardStep === 'Processor'" ng-submit="submitGateway()">
+  <div class="row">
+    <div class="form-group form-group-default col-sm-12">
+    <label>Processor</label>
+    <select ng-model="gatewayProcessor" class="form-control">
+      <option value="" selected> - Select a Processor -</option>
+      <option>Vantiv</option>
+      <option>Heartland</option>
+      <option>TSYS</option>
+      <option value="WorldPay">World Pay</option>
+      <option value="FirstData">First Data</option>
+    </select>
+  </div>
+  </div>
+  <div class="row">
+    <div class="form-group form-group-default col-sm-12">
+    <label>Mid Category</label>
+    <select ng-model="enrollGateway.MidCategory" class="form-control">
+      <option ng-repeat="option in midCategories">{{option}}</option>
+    </select>
+  </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'Vantiv'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>External Mid</label>
+      <input type="text" class="form-control" ng-model="enrollGateway.ExternalMid" ng-required="gatewayProcessor === 'Vantiv'" />
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'WorldPay'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>External Mid</label>
+      <input type="text" class="form-control" ng-model="enrollGateway.ExternalMid" ng-required="gatewayProcessor === 'WorldPay'" />
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'WorldPay'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Tid</label>
+      <input type="text" class="form-control" ng-model="enrollGateway.Tid" ng-required="gatewayProcessor === 'WorldPay'" />
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'WorldPay'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Check Digit</label>
+      <input type="text" class="form-control" ng-model="enrollGateway.CheckDigit" ng-required="gatewayProcessor === 'WorldPay'" />
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'WorldPay'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Auto Close Time (Eastern TimeZone)</label>
+      <input type="text" class="form-control" ng-model="enrollGateway.AutoCloseTimeEastern"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'WorldPay'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Feature Flags</label>
+      <a class="btn btn-sm btn-default" ng-click="enrollGateway.ContactlessCapable = !enrollGateway.ContactlessCapable">
+        <i class="fa" ng-class="{'fa-check-square': enrollGateway.ContactlessCapable, ' fa-square': !enrollGateway.ContactlessCapable}">
+          Contactless Capable
+        </i>
+      </a>
+      <a class="btn btn-sm btn-default" ng-click="enrollGateway.CustomerActivated = !enrollGateway.CustomerActivated">
+        <i class="fa" ng-class="{'fa-check-square': enrollGateway.CustomerActivated, ' fa-square': !enrollGateway.CustomerActivated}">
+          Customer Activated
+        </i>
+      </a>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'Heartland'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>License ID</label>
+      <input type="text" placeholder="F144263410D349FCB11B" ng-model="enrollGateway.LicenseID" class="form-control" ng-required="gatewayProcessor === 'Heartland'"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'Heartland'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Site ID</label>
+      <input type="text" placeholder="117DB58255A3415486FD" ng-model="enrollGateway.SiteId" class="form-control" ng-required="gatewayProcessor === 'Heartland'"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'Heartland'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Device ID</label>
+      <input type="text" placeholder="E10993F63AAD4E9CA580" ng-model="enrollGateway.DeviceId" class="form-control" ng-required="gatewayProcessor === 'Heartland'"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'Heartland'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Username</label>
+      <input type="text" placeholder="U23RN4M3" ng-model="enrollGateway.Username" class="form-control" ng-required="gatewayProcessor === 'Heartland'"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'Heartland'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Password</label>
+      <input type="text" placeholder="P4SSw0rd1" ng-model="enrollGateway.Password" class="form-control" ng-required="gatewayProcessor === 'Heartland'"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'TSYS'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Host Capture POS ID</label>
+      <input type="text" placeholder="111D3E990FA8428" ng-model="enrollGateway.HostCapturePosId" class="form-control" ng-required="gatewayProcessor === 'TSYS'"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'TSYS'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Authentication Code</label>
+      <input type="text" placeholder="111D3E990FA8428" ng-model="enrollGateway.AuthenticationCode" class="form-control" ng-required="gatewayProcessor === 'TSYS'"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'TSYS'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Zip</label>
+      <input type="text" placeholder="81301" ng-model="enrollGateway.Zip" class="form-control" ng-required="gatewayProcessor === 'TSYS'"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'FirstData'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>External Mid</label>
+      <input type="text" placeholder="657A22A51CC74388" ng-model="enrollGateway.ExternalMid" class="form-control" ng-required="gatewayProcessor === 'FirstData'"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'FirstData'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Tid</label>
+      <input type="text" placeholder="422FC172" ng-model="enrollGateway.Tid" class="form-control" ng-required="gatewayProcessor === 'FirstData'"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'FirstData'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Gid</label>
+      <input type="text" placeholder="7C2E8B5308AC" ng-model="enrollGateway.Gid" class="form-control" ng-required="gatewayProcessor === 'FirstData'"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'FirstData'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Category Code</label>
+      <input type="text" placeholder="7C2E8B5308AC" ng-model="enrollGateway.CategoryCode" class="form-control" ng-required="gatewayProcessor === 'FirstData'"/>
+    </div>
+  </div>
+  <div ng-show="gatewayProcessor === 'FirstData'" class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Totals Password</label>
+      <input type="text" placeholder="P422W0rd" ng-model="enrollGateway.TotalsPassword" class="form-control" ng-required="gatewayProcessor === 'FirstData'"/>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <button class="btn btn-block btn-primary" ng-click="wizardStep = 'Addresses';"> Back </button>
+    </div>
+    <div class="col-sm-6">
+      <button class="btn btn-block btn-primary" type="submit"> Next </button>
+    </div>
+  </div>
+</form>
+<form ng-show="wizardStep === 'TermsAndCondtions'" ng-submit="submitTermsAndConditions()">
+  <div class="row">
+    <div class="pre-scrollable col-sm-12">
+      {{TermsAndConditions|raw}}
+    </div>
+  </div>
+</form>
