@@ -23,10 +23,11 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 	$scope.confirmation = {};
   $scope.scheduleCredentials = {};
 
-  $scope.developerApiKey = 'test_api4XA6VYZRTAKW';
-  $scope.developerApiKeyInput = 'test_api4XA6VYZRTAKW';
+  $scope.developerApiKey = $location.search().apiKey || 'test_api650C14Z974X5';
+  $scope.developerApiKeyInput = $scope.developerApiKey;
 	$scope.resellers = [];
 	$scope.$watch('gatewayProcessor', function(oldVal, newVal){
+		$scope.enrollGateway = {};
 		switch($scope.gatewayProcessor)
 		{
 			case 'Vantiv':
@@ -35,6 +36,8 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 			break;
 			case 'WorldPay':
 				$scope.midCategories = ['Retail', 'DirectMarket', 'Ecommerce'];
+				$scope.enrollGateway.ContactlessCapable  = false;
+				$scope.enrollGateway.CustomerActivated  = false;
 			break;
 			case 'Heartland':
 				$scope.midCategories = ['Retail', 'Restaurant'];
@@ -73,6 +76,10 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 
 	$scope.submitMerchant = function() {
 		$boarding.submitMerchant($scope.merchant, function(response){
+			if($scope.merchant.Website === ''){
+				$scope.merchant.Website = null;
+			}
+
 			if(!response.isSuccessful) {
 				$scope.wizardStep = 'Merchant';
 			} else {
