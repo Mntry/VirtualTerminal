@@ -72,9 +72,11 @@ app.service('$boarding', [ '$http', '$rootScope', '$localStorage', function($htt
   this.submitContacts = function(merchantID, contacts, callback){
     var count = contacts.length;
     var wasSuccess = true;
+
     var notifyUI = function(response){
       count--;
       wasSuccess = wasSuccess && response.isSuccessful;
+      
       if(count <= 0)
       {
         response.isSuccessful = wasSuccess; //aggregation of success

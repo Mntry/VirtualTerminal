@@ -116,17 +116,16 @@
   </div>
   <div class="row">
     <div class="form-group form-group-default col-sm-6">
-      <button class="btn btn-primary btn-block" ng-click="contacts.push({Type:'Employee'});">Add Contact</button>
+      <button class="btn btn-primary btn-block" ng-click="contacts.push({Type:'Employee'});" disabled title="can be implemented for more contacts">Add Contact</button>
     </div>
     <div class="form-group form-group-default col-sm-6">
       <button class="btn btn-primary btn-block" ng-click="contacts.pop();" ng-disabled="contacts.length == 1">Remove Contact</button>
   </div>
   </div>
   <div class="row">
-
-  <div class="form-group form-group-default col-sm-12">
-    <button class="btn btn-primary btn-block" type="submit">Next</button>
-  </div>
+    <div class="form-group form-group-default col-sm-12">
+      <button class="btn btn-primary btn-block" type="submit">Next</button>
+    </div>
   </div>
 </form>
 <form ng-show="wizardStep === 'Addresses'" ng-submit="submitAddresses()">

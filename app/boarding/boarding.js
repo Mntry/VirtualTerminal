@@ -98,6 +98,8 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 		$boarding.submitContacts($scope.merchantID, $scope.contacts, function(response){
 			if(response.isSuccessful){
 				$scope.wizardStep = 'Addresses';
+			}else{
+				$scope.contacts = response.content
 			}
 		});
 	};
