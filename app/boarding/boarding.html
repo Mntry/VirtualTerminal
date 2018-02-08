@@ -115,18 +115,18 @@
     </div>
   </div>
   <div class="row">
-    <div class="form-group form-group-default col-sm-3">
-      <button class="btn btn-primary btn-block" ng-disabled="typeof(merchant.wasSuccessful) !== 'undefined'" ng-click="wizardStep =='Merchant'">Back</button>
+    <div class="form-group form-group-default col-sm-6">
+      <button class="btn btn-primary btn-block" ng-click="contacts.push({Type:'Employee'});">Add Contact</button>
     </div>
-    <div class="form-group form-group-default col-sm-3">
-      <button class="btn btn-primary btn-block" ng-click="contacts.push({Type:'Employee'});">Add</button>
-    </div>
-    <div class="form-group form-group-default col-sm-3">
-      <button class="btn btn-primary btn-block" ng-click="contacts.pop();" ng-disabled="contacts.length == 1">Remove</button>
-    </div>
-    <div class="form-group form-group-default col-sm-3">
-      <button class="btn btn-primary btn-block" type="submit">Next</button>
-    </div>
+    <div class="form-group form-group-default col-sm-6">
+      <button class="btn btn-primary btn-block" ng-click="contacts.pop();" ng-disabled="contacts.length == 1">Remove Contact</button>
+  </div>
+  </div>
+  <div class="row">
+
+  <div class="form-group form-group-default col-sm-12">
+    <button class="btn btn-primary btn-block" type="submit">Next</button>
+  </div>
   </div>
 </form>
 <form ng-show="wizardStep === 'Addresses'" ng-submit="submitAddresses()">
