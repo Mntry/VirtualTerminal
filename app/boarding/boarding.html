@@ -1,11 +1,11 @@
 <h4>Enroll In Monetary Platforms</h4>
 <div class="row col-sm-12">
-    <a ng-click="wizardStep = 'Merchant';" ng-class="{'font-weight-bold': wizardStep == 'Merchant'}">Merchant</a>
+    <!-- <a ng-click="wizardStep = 'Merchant';" ng-class="{'font-weight-bold': wizardStep == 'Merchant'}">Merchant</a>
     <a ng-click="wizardStep = 'Contacts';" ng-class="{'font-weight-bold': wizardStep == 'Contacts'}"> > Contacts</a>
     <a ng-click="wizardStep = 'Addresses';" ng-class="{'font-weight-bold': wizardStep == 'Addresses'}"> > Addresses</a>
     <a ng-click="wizardStep = 'Processor';" ng-class="{'font-weight-bold': wizardStep == 'Processor'}" ng-show="enrollInProcessor"> > Processor</a>
     <a ng-click="wizardStep = 'Schedule';" ng-class="{'font-weight-bold': wizardStep == 'Schedule'}" ng-show="enrollInSchedule"> > Schedule</a>
-    <a ng-click="wizardStep = 'TermsAndCondtions'" ng-class="{'font-weight-bold': wizardStep == 'TermsAndCondtions'}" > > Terms and Condtions</a>
+    <a ng-click="wizardStep = 'TermsAndCondtions';getTandC()" ng-class="{'font-weight-bold': wizardStep == 'TermsAndCondtions'}" > > Terms and Condtions</a> -->
 
   <!-- <a ng-click="wizardKey = 'Merchant'" ng-class="{'active': }" >Merchant</a>
   <a ng-click="wizardKey = 'Contacts'">-> Contacts</a> >
@@ -47,6 +47,7 @@
     <div class="form-group form-group-default col-sm-12">
       <label>Timezone</label>
       <select ng-model="merchant.Timezone" class="form-control" required>
+        <option value="" selected disabled> Select Timezone </option>
         <option>Eastern</option>
         <option>Central</option>
         <option>Mountain</option>
@@ -61,6 +62,7 @@
     <div class="form-group form-group-default col-sm-12">
       <label>Reseller / Dealer</label>
       <select ng-model="merchant.ResellerID" placeholder="555-569-8305" class="form-control">
+        <option value="" selected disabled> Select Reseller </option>
         <option ng-repeat="r in resellers" value={{r.ID}}>{{r.Name}}</option>
       </select>
     </div>
@@ -134,28 +136,25 @@
   <div class="row">
     <div class="form-group form-group-default col-sm-12">
       <label>Street</label>
-      <input type="text" ng-model="address.Street" class="form-control" required />
+      <input type="text" ng-model="address.Street" class="form-control" required placeholder="123 Fake Ave"/>
     </div>
   </div>
   <div class="row" ng-repeat-end>
     <div class="form-group form-group-default col-sm-4">
       <label>City</label>
-      <input type="text" ng-model="address.City" required class="form-control" required />
+      <input type="text" ng-model="address.City" required class="form-control" required placeholder="Durango" />
     </div>
     <div class="form-group form-group-default col-sm-4">
       <label>State</label>
-      <input type="text" ng-model="address.State" required class="form-control" required />
+      <input type="text" ng-model="address.State" required class="form-control" required placeholder="CO" maxlength="2" />
     </div>
     <div class="form-group form-group-default col-sm-4">
       <label>Postal Code</label>
-      <input type="text" ng-model="address.PostalCode" required class="form-control" required />
+      <input type="text" ng-model="address.PostalCode" required class="form-control" required placeholder="81301" maxlength="5" />
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-6">
-      <button class="btn btn-block btn-primary" ng-click="wizardStep = 'Contacts';"> Back </button>
-    </div>
-    <div class="col-sm-6">
+    <div class="col-sm-12">
       <button class="btn btn-primary btn-block" type="submit"> Next </button>
     </div>
   </div>
@@ -165,7 +164,7 @@
     <div class="form-group form-group-default col-sm-12">
     <label>Processor</label>
     <select ng-model="gatewayProcessor" class="form-control">
-      <option value="" selected> - Select a Processor -</option>
+      <option value="" selected> Select a Processor </option>
       <option>Vantiv</option>
       <option>Heartland</option>
       <option>TSYS</option>
@@ -177,7 +176,7 @@
   <div class="row">
     <div class="form-group form-group-default col-sm-12">
     <label>Mid Category</label>
-    <select ng-model="enrollGateway.MidCategory" class="form-control">
+    <select ng-model="enrollGateway.Category" class="form-control">
       <option ng-repeat="option in midCategories">{{option}}</option>
     </select>
   </div>
@@ -185,31 +184,31 @@
   <div ng-show="gatewayProcessor === 'Vantiv'" class="row">
     <div class="form-group form-group-default col-sm-12">
       <label>External Mid</label>
-      <input type="text" class="form-control" ng-model="enrollGateway.ExternalMid" ng-required="gatewayProcessor === 'Vantiv'" />
+      <input type="text" class="form-control" ng-model="enrollGateway.ExternalMid" ng-required="gatewayProcessor === 'Vantiv'" placeholder="A1577DCCF8364B0AAC922BFE" />
     </div>
   </div>
   <div ng-show="gatewayProcessor === 'WorldPay'" class="row">
     <div class="form-group form-group-default col-sm-12">
       <label>External Mid</label>
-      <input type="text" class="form-control" ng-model="enrollGateway.ExternalMid" ng-required="gatewayProcessor === 'WorldPay'" />
+      <input type="text" class="form-control" ng-model="enrollGateway.ExternalMid" ng-required="gatewayProcessor === 'WorldPay'" placeholder="9E1402AB175F4C7" />
     </div>
   </div>
   <div ng-show="gatewayProcessor === 'WorldPay'" class="row">
     <div class="form-group form-group-default col-sm-12">
       <label>Tid</label>
-      <input type="text" class="form-control" ng-model="enrollGateway.Tid" ng-required="gatewayProcessor === 'WorldPay'" />
+      <input type="text" class="form-control" ng-model="enrollGateway.Tid" ng-required="gatewayProcessor === 'WorldPay'" placeholder="553A4E12" />
     </div>
   </div>
   <div ng-show="gatewayProcessor === 'WorldPay'" class="row">
     <div class="form-group form-group-default col-sm-12">
       <label>Check Digit</label>
-      <input type="text" class="form-control" ng-model="enrollGateway.CheckDigit" ng-required="gatewayProcessor === 'WorldPay'" />
+      <input type="text" class="form-control" ng-model="enrollGateway.CheckDigit" ng-required="gatewayProcessor === 'WorldPay'" placeholder="5" maxlength="1" />
     </div>
   </div>
   <div ng-show="gatewayProcessor === 'WorldPay'" class="row">
     <div class="form-group form-group-default col-sm-12">
       <label>Auto Close Time (Eastern TimeZone)</label>
-      <input type="text" class="form-control" ng-model="enrollGateway.AutoCloseTimeEastern"/>
+      <input type="text" class="form-control" ng-model="enrollGateway.AutoCloseTimeEastern" placeholder="04:00" maxlength="5"/>
     </div>
   </div>
   <div ng-show="gatewayProcessor === 'WorldPay'" class="row">
@@ -306,10 +305,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-6">
-      <button class="btn btn-block btn-primary" ng-click="wizardStep = 'Addresses';"> Back </button>
-    </div>
-    <div class="col-sm-6">
+    <div class="col-sm-12">
       <button class="btn btn-block btn-primary" type="submit"> Next </button>
     </div>
   </div>
@@ -317,7 +313,16 @@
 <form ng-show="wizardStep === 'TermsAndCondtions'" ng-submit="submitTermsAndConditions()">
   <div class="row">
     <div class="pre-scrollable col-sm-12">
-      {{TermsAndConditions|raw}}
+      <pre>{{TermsAndConditions}}</pre>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group form-group-default col-sm-12">
+      <label>Initials</label>
+      <input type="text" class="form-control" required ng-model="confirmation.Initials" />
+    </div>
+    <div class="form-group form-group-default col-sm-12">
+      <button type="submit" class="btn btn-primary btn-lg btn-block" >Accept T &amp; C</button>
     </div>
   </div>
 </form>

@@ -8,8 +8,9 @@ angular.module('myApp.boarding', ['ngRoute'])
 	});
 }])
 
-.controller('BoardingCtrl', ['$rootScope', '$scope', '$localStorage', '$boarding',
-function($rootScope, $scope, $localStorage, $boarding){
+.controller('BoardingCtrl', [
+	'$rootScope', '$scope', '$localStorage', '$boarding','$location',
+function($rootScope, $scope, $localStorage, $boarding, $location){
   $scope.enableGateway = false;
   $scope.enableSchedule = false;
 	$scope.wizardStep = 'ApiKey';
@@ -19,6 +20,7 @@ function($rootScope, $scope, $localStorage, $boarding){
 	$scope.addresses = [{Type: "Physical Address"}, {Type: "Mailing Address"}]
   $scope.enrollGateway = {};
 	$scope.gatewayProcessor = "";
+	$scope.confirmation = {};
   $scope.scheduleCredentials = {};
 
   $scope.developerApiKey = 'test_api4XA6VYZRTAKW';
@@ -70,35 +72,65 @@ function($rootScope, $scope, $localStorage, $boarding){
 	}
 
 	$scope.submitMerchant = function() {
-		$scope.wizardStep = 'Contacts';
-		if(!$scope.merchant.wasSuccessful){
-			$boarding.submitMerchant($scope.merchant, function(response){
-				$scope.merchant.wasSuccessful = response.wasSuccessful;
-				if(!response.wasSuccessful){
-					$rootScope.showError(response.data.message);
-					$scope.merchantModelState = response.ModelState;
-					$scope.wizardStep = 'Merchant';
-				}
-			});
-		}
+		$boarding.submitMerchant($scope.merchant, function(response){
+			if(!response.isSuccessful) {
+				$scope.wizardStep = 'Merchant';
+			} else {
+				var cfg = $localStorage.config();
+				cfg.merchantName = response.content.Name;
+				cfg.merchantPhone = response.content.Phone;
+				cfg.secret = response.content.SecretAuthenticator;
+				$localStorage.config(cfg);
+				$scope.merchantID = response.content.ID;
+				$scope.wizardStep = 'Contacts';
+			}
+		});
 	};
 
 	$scope.submitContacts = function() {
-		$scope.wizardStep = 'Addresses';
-		//todo submit contacts
+		$boarding.submitContacts($scope.merchantID, $scope.contacts, function(response){
+			if(response.isSuccessful){
+				$scope.wizardStep = 'Addresses';
+			}
+		});
 	};
 	$scope.submitAddresses = function () {
-		if($scope.enrollInProcessor){
-			$scope.wizardStep = 'Processor';
-		}
+		$boarding.submitAddresses($scope.merchantID, $scope.addresses, function(response){
+			if(response.isSuccessful){
+				if($scope.enrollInProcessor){
+					$scope.wizardStep = 'Processor';
+				}
+			}
+		});
 	};
 	$scope.submitGateway = function() {
-		if($scope.enrollInSchedule){
-			$scope.wizardStep = 'Schedule';
-		}
-		else {
-			$scope.wizardStep = 'TermsAndCondtions';
-		}
+		$boarding.submitProcessor($scope.merchantID, $scope.gatewayProcessor, $scope.enrollGateway,
+			function(response){
+				if(response.isSuccessful){
+					if($scope.enrollInSchedule){
+						$scope.wizardStep = 'Schedule';
+					}
+					else {
+						$scope.wizardStep = 'TermsAndCondtions';
+						$scope.getTandC();
+					}
+			}
+		});
+	};
+	$scope.getTandC = function(){
+		$boarding.getTAndC($scope.merchantID, function(response){
+			if(response.isSuccessful){
+				$scope.TermsAndConditions = response.content.Processor;
+			}
+		});
+	};
+	$scope.submitTermsAndConditions = function(){
+		$boarding.submitTandC($scope.merchantID, $scope.confirmation, function(response){
+			if(response.isSuccessful){
+				$rootScope.showSuccess('Monetary Boarding Complete!');
+				$location.path('/configure');
+			}
+		});
 	};
 
 }]);
