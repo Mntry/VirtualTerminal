@@ -9,8 +9,11 @@ app.service('$boarding', [ '$http', '$rootScope', '$localStorage', function($htt
 				$rootScope.showProgress = false;
 
         var msgs = [];
+        var modelState = {};
         if(!isSuccessful){
-
+          if(response.data && !response.data.ModelState){
+            response.data.ModelState = {};
+          }
           for(key in response.data.ModelState){
             var errors = response.data.ModelState[key];
             for(let i = 0; i < errors.length; i++){
@@ -22,11 +25,15 @@ app.service('$boarding', [ '$http', '$rootScope', '$localStorage', function($htt
             msgs.push(response.data.Message);
             $rootScope.showError(response.data.Message);
           }
+          modelState = response.data.ModelState;
         }
+
+
 				callback({
           content: response.data,
           isSuccessful: isSuccessful,
-          messages: msgs
+          messages: msgs,
+          modelState: modelState
         });
 			}
 		};
@@ -67,32 +74,68 @@ app.service('$boarding', [ '$http', '$rootScope', '$localStorage', function($htt
     sendRequest(callback, 'GET', 'Resellers');
   };
   this.submitMerchant = function(merchant, callback){
-    sendRequest(callback, 'POST', 'Merchants', merchant);
+    var method = 'POST';
+    var uri = 'Merchants';
+    if(merchant.ID){
+      method = 'PUT';
+      uri += "/" + merchant.ID;
+    }
+    sendRequest(callback, method, uri, merchant);
+  };
+  this.getMerchant = function(merchantID, callback) {
+    sendRequest(callback, 'GET', 'Merchants/'+merchantID);
+  };
+  this.getContacts = function(merchantID, callback) {
+    //if no conacts, then we will add an empty owner to default
+    var callbackWrapper = function(response) {
+      if (response.isSuccessful){
+         if (response.content.length === 0){
+           response.content = [{Type:'Owner'}];
+         }else{
+           response.content = response.content.sort(function(a,b){
+             return (a.Type < b.Type) - (a.Type > b.Type);
+           });
+         }
+      }
+      callback(response);
+    };
+    sendRequest(callbackWrapper, 'GET', 'Merchants/' + merchantID + '/Contacts');
   };
   this.submitContacts = function(merchantID, contacts, callback){
     var count = contacts.length;
     var wasSuccess = true;
-
+    var aggregateState = [];
     var notifyUI = function(response){
       count--;
       wasSuccess = wasSuccess && response.isSuccessful;
-      
+      if(!response.modelState){
+        aggregateState.push({}); //empty of errors!
+      }else{
+        aggregateState.push(response.modelState);
+      }
       if(count <= 0)
       {
         response.isSuccessful = wasSuccess; //aggregation of success
         response.content = contacts;
+        response.modelState = aggregateState;
         callback(response);
       }
     };
-
     var sendContact = function(contact){
-      sendRequest(notifyUI, 'POST', 'Merchants/' + merchantID + '/Contacts', contact);
+      var path = 'Merchants/' + merchantID + '/Contacts';
+      var method = 'POST';
+      if(contact.ID){
+        path += '/' + contact.ID;
+        method = 'PUT';
+      }
+      sendRequest(notifyUI, method, path, contact);
     };
     for(let i = 0; i < contacts.length; i++){
       var contact = contacts[i];
       sendContact(contact);
     }
   };
+
   this.submitAddresses = function(merchantID, addresses, callback){
     var count = addresses.length;
     var wasSuccessful = true;
@@ -118,7 +161,14 @@ app.service('$boarding', [ '$http', '$rootScope', '$localStorage', function($htt
   this.submitProcessor = function(merchantID, gatewayProcessor, processor, callback){
     sendRequest(callback, 'POST', 'Merchants/' + merchantID + "/Processors/" + gatewayProcessor, processor);
   };
-  this.getTAndC = function(merchantID, callback){
+  this.getProcessors = function(merchantID, callback){
+    sendRequest(callback, 'GET', 'Merchants/' + merchantID + '/Processors');
+  };
+  this.submitSchedule = function(merchantID, schedulePayload, callback) {
+    sendRequest(callback, 'PUT', 'Merchants/' + merchantID + "/Schedule", schedulePayload);
+  };
+
+  this.getTandC = function(merchantID, callback){
     sendRequest(callback, 'GET', 'Merchants/'+merchantID+"/TermsAndConditions");
   };
   this.submitTandC = function(merchantID, initials, callback){

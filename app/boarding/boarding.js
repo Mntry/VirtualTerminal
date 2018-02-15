@@ -19,7 +19,9 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
   $scope.contacts = [{Type: 'Owner'}];
 	$scope.addresses = [{Type: "Physical Address"}, {Type: "Mailing Address"}]
   $scope.enrollGateway = {};
+	$scope.enrollSchedule = {};
 	$scope.gatewayProcessor = "";
+	$scope.processors = [];
 	$scope.confirmation = {};
   $scope.scheduleCredentials = {};
 
@@ -53,7 +55,45 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 			break;
 		}
 	});
-
+  $scope.$watch('wizardStep', function(oldVal, newVal){
+		switch($scope.wizardStep)
+		{
+			case 'Schedule':
+				$scope.getProcessors();
+			break;
+			case 'TermsAndConditions':
+				$scope.getTandC();
+			break;
+			case 'Contacts':
+				$scope.getContacts();
+			break;
+			default:
+			break;
+		}
+	});
+	$scope.getMerchant = function(id){
+		$boarding.getMerchant(id, function(response){
+			if(response.isSuccessful){
+				$scope.merchant = response.content;
+			}
+		});
+	}
+	$scope.getProcessors = function(){
+		$boarding.getProcessors($scope.merchantID, function(response){
+			if(response.isSuccessful){
+				$scope.processors = response.content;
+			}
+		});
+	};
+	$scope.getContacts = function() {
+		$boarding.getContacts($scope.merchantID, function(response){
+			if(response.isSuccessful){
+				$scope.contacts = response.content;
+			}else{
+				$scope.contacts = [{Type:'Owner'}];
+			}
+		});
+	};
 
   $scope.setBoardingApiValues = function() {
 		$scope.developerApiKey = $scope.developerApiKeyInput;
@@ -75,13 +115,13 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 	}
 
 	$scope.submitMerchant = function() {
+		if($scope.merchant.Website === ''){
+			$scope.merchant.Website = null;
+		}
 		$boarding.submitMerchant($scope.merchant, function(response){
-			if($scope.merchant.Website === ''){
-				$scope.merchant.Website = null;
-			}
-
 			if(!response.isSuccessful) {
 				$scope.wizardStep = 'Merchant';
+				$scope.merchant = response.content;
 			} else {
 				var cfg = $localStorage.config();
 				cfg.merchantName = response.content.Name;
@@ -93,13 +133,20 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 			}
 		});
 	};
-
+	$scope.removeContact = function(index) {
+		var contact = $scope.contacts[index];
+		if(contact.ID){
+			alert('Cannot remove this contact once it has been submitted');
+		}else if(confirm('Are you sure you want to remove this contact?')){
+			$scope.contacts.splice(index, 1);
+		}
+	};
 	$scope.submitContacts = function() {
 		$boarding.submitContacts($scope.merchantID, $scope.contacts, function(response){
 			if(response.isSuccessful){
 				$scope.wizardStep = 'Addresses';
 			}else{
-				$scope.contacts = response.content
+				$scope.contactErrors = response.modelState;
 			}
 		});
 	};
@@ -113,23 +160,46 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 		});
 	};
 	$scope.submitGateway = function() {
-		$boarding.submitProcessor($scope.merchantID, $scope.gatewayProcessor, $scope.enrollGateway,
-			function(response){
-				if(response.isSuccessful){
-					if($scope.enrollInSchedule){
-						$scope.wizardStep = 'Schedule';
-					}
-					else {
-						$scope.wizardStep = 'TermsAndCondtions';
-						$scope.getTandC();
-					}
+		if($scope.processorEnrollmentSuccessful){
+			if($scope.enrollInSchedule){
+				$scope.wizardStep = 'Schedule';
+			} else {
+				$scope.wizardStep = 'TermsAndConditions';
+			}
+		} else {
+			$boarding.submitProcessor($scope.merchantID, $scope.gatewayProcessor, $scope.enrollGateway,
+				function(response){
+					if(response.isSuccessful){
+						$scope.processorEnrollmentSuccessful = true;
+						if($scope.enrollInSchedule){
+							$scope.wizardStep = 'Schedule';
+						}
+						else {
+							$scope.wizardStep = 'TermsAndConditions';
+						}
+				}
+			});
+		}
+	};
+
+	$scope.submitSchedule = function() {
+		$boarding.submitSchedule($scope.merchantID, $scope.enrollSchedule, function(response){
+			if(response.isSuccessful){
+				$scope.wizardStep = 'TermsAndConditions';
 			}
 		});
 	};
+
 	$scope.getTandC = function(){
-		$boarding.getTAndC($scope.merchantID, function(response){
+		$boarding.getTandC($scope.merchantID, function(response){
 			if(response.isSuccessful){
-				$scope.TermsAndConditions = response.content.Processor;
+				$scope.TermsAndConditions = '';
+				if (response.content.Processor){
+					$scope.TermsAndConditions = response.content.Processor;
+				}
+				if(response.content.Schedule) {
+					$scope.TermsAndCondtions += response.content.Schedule;
+				}
 			}
 		});
 	};
