@@ -56,6 +56,9 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 		}
 	});
   $scope.$watch('wizardStep', function(oldVal, newVal){
+		if(oldVal === newVal){
+			return;
+		}
 		switch($scope.wizardStep)
 		{
 			case 'Schedule':
@@ -121,7 +124,6 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 		$boarding.submitMerchant($scope.merchant, function(response){
 			if(!response.isSuccessful) {
 				$scope.wizardStep = 'Merchant';
-				$scope.merchant = response.content;
 			} else {
 				var cfg = $localStorage.config();
 				cfg.merchantName = response.content.Name;
