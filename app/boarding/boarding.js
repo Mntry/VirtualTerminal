@@ -17,7 +17,7 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 	$scope.wizStepOptions = ['Merchant', 'Contacts', 'Addresses', 'Processor', 'Schedule'];
   $scope.merchant = {};
   $scope.contacts = [{Type: 'Owner'}];
-	$scope.addresses = [{Type: "Physical Address"}, {Type: "Mailing Address"}]
+	$scope.addresses = [{Type: "Physical Address"}, {Type: "Mailing Address"}];
   $scope.enrollGateway = {};
 	$scope.enrollSchedule = {};
 	$scope.gatewayProcessor = "";
@@ -80,7 +80,7 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 				$scope.merchant = response.content;
 			}
 		});
-	}
+	};
 	$scope.getProcessors = function(){
 		$boarding.getProcessors($scope.merchantID, function(response){
 			if(response.isSuccessful){
