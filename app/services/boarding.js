@@ -167,6 +167,9 @@ app.service('$boarding', [ '$http', '$rootScope', '$localStorage', function($htt
   this.submitSchedule = function(merchantID, schedulePayload, callback) {
     sendRequest(callback, 'PUT', 'Merchants/' + merchantID + "/Schedule", schedulePayload);
   };
+  this.submitGift = function(merchantID, giftPayload, callback) {
+    sendRequest(callback, 'POST', 'Merchants/' + merchantID + "/StoredValue", giftPayload);
+  };
 
   this.getTandC = function(merchantID, callback){
     sendRequest(callback, 'GET', 'Merchants/'+merchantID+"/TermsAndConditions");

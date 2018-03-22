@@ -14,7 +14,7 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
   $scope.enableGateway = false;
   $scope.enableSchedule = false;
 	$scope.wizardStep = 'ApiKey';
-	$scope.wizStepOptions = ['Merchant', 'Contacts', 'Addresses', 'Processor', 'Schedule'];
+	$scope.wizStepOptions = ['Merchant', 'Contacts', 'Addresses', 'Processor', 'Schedule', 'Gift', 'TermsAndConditions'];
   $scope.merchant = {};
   $scope.contacts = [{Type: 'Owner'}];
 	$scope.addresses = [{Type: "Physical Address"}, {Type: "Mailing Address"}];
@@ -22,12 +22,41 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 	$scope.enrollSchedule = {};
 	$scope.gatewayProcessor = "";
 	$scope.processors = [];
+	$scope.giftType  = 'Standalone';
+	$scope.giftEnrollment = {};
 	$scope.confirmation = {};
   $scope.scheduleCredentials = {};
 
   $scope.developerApiKey = $location.search().apiKey || 'test_api650C14Z974X5';
   $scope.developerApiKeyInput = $scope.developerApiKey;
 	$scope.resellers = [];
+	$scope.stepsToInclude = [];
+	$scope.productChange = function() {
+		$scope.stepsToInclude = ['Merchant', 'Contacts', 'Addresses'];
+		if($scope.enrollInProcessor){
+			$scope.stepsToInclude.push('Processor');
+		}
+		if($scope.enrollInSchedule){
+			$scope.stepsToInclude.push('Schedule');
+		}
+		if($scope.enrollInGift){
+			$scope.stepsToInclude.push('Gift');
+		}
+		$scope.stepsToInclude.push('TermsAndConditions');
+	}
+
+	$scope.nextStep = function() {
+		var index = $scope.stepsToInclude.indexOf($scope.wizardStep);
+		index++;
+		$scope.wizardStep = $scope.stepsToInclude[index];
+	};
+	$scope.prevStep = function() {
+		var index = $scope.stepsToInclude.indexOf($scope.wizardStep);
+		index--;
+		$scope.wizardStep = $scope.stepsToInclude[index];
+	};
+
+
 	$scope.$watch('gatewayProcessor', function(oldVal, newVal){
 		$scope.enrollGateway = {};
 		switch($scope.gatewayProcessor)
@@ -97,7 +126,6 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 			}
 		});
 	};
-
   $scope.setBoardingApiValues = function() {
 		$scope.developerApiKey = $scope.developerApiKeyInput;
 		$scope.wizardStep = 'Merchant';
@@ -131,7 +159,8 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 				cfg.secret = response.content.SecretAuthenticator;
 				$localStorage.config(cfg);
 				$scope.merchantID = response.content.ID;
-				$scope.wizardStep = 'Contacts';
+				$scope.merchant.ID = response.content.ID;
+				$scope.nextStep();
 			}
 		});
 	};
@@ -146,7 +175,7 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 	$scope.submitContacts = function() {
 		$boarding.submitContacts($scope.merchantID, $scope.contacts, function(response){
 			if(response.isSuccessful){
-				$scope.wizardStep = 'Addresses';
+				$scope.nextStep();
 			}else{
 				$scope.contactErrors = response.modelState;
 			}
@@ -155,30 +184,19 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 	$scope.submitAddresses = function () {
 		$boarding.submitAddresses($scope.merchantID, $scope.addresses, function(response){
 			if(response.isSuccessful){
-				if($scope.enrollInProcessor){
-					$scope.wizardStep = 'Processor';
-				}
+				$scope.nextStep();
 			}
 		});
 	};
 	$scope.submitGateway = function() {
 		if($scope.processorEnrollmentSuccessful){
-			if($scope.enrollInSchedule){
-				$scope.wizardStep = 'Schedule';
-			} else {
-				$scope.wizardStep = 'TermsAndConditions';
-			}
+			$scope.nextStep();
 		} else {
 			$boarding.submitProcessor($scope.merchantID, $scope.gatewayProcessor, $scope.enrollGateway,
 				function(response){
 					if(response.isSuccessful){
 						$scope.processorEnrollmentSuccessful = true;
-						if($scope.enrollInSchedule){
-							$scope.wizardStep = 'Schedule';
-						}
-						else {
-							$scope.wizardStep = 'TermsAndConditions';
-						}
+					 	$scope.nextStep();
 				}
 			});
 		}
@@ -187,10 +205,23 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 	$scope.submitSchedule = function() {
 		$boarding.submitSchedule($scope.merchantID, $scope.enrollSchedule, function(response){
 			if(response.isSuccessful){
-				$scope.wizardStep = 'TermsAndConditions';
+				$scope.nextStep();
 			}
 		});
 	};
+
+	$scope.submitGift = function () {
+		if(!$scope.giftEnrollment.ID){
+			$boarding.submitGift($scope.merchantID, $scope.giftEnrollment, function(response){
+				if(response.isSuccessful){
+					$scope.giftEnrollment = response.content;
+					$scope.nextStep();
+				}
+			});
+		}else{
+			$scope.nextStep();
+		}
+	}
 
 	$scope.getTandC = function(){
 		$boarding.getTandC($scope.merchantID, function(response){

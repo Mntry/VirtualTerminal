@@ -1,5 +1,4 @@
 <h4>Enroll In Monetary Platforms</h4>
-<!-- <a ng-click="wizardStep = 'Merchant';getMerchant('001W000000eWRFKIA4');">jump to merchant</a>|<a ng-click="wizardStep = 'TermsAndConditions';merchantID = '001W000000eWRFKIA4';">Jump to T and C</a> -->
 <form ng-show="wizardStep === 'ApiKey'" ng-submit="setBoardingApiValues()" >
   <div class="row">
     <div class="col-sm-6">
@@ -58,19 +57,24 @@
   <div class="row">
     <div class="form-group form-group-default col-sm-12">
       <label>Products to Enroll</label>
-      <a class="btn btn-sm btn-default" ng-click="enrollInProcessor = !enrollInProcessor">
+      <a class="btn btn-sm btn-default" ng-click="enrollInProcessor = !enrollInProcessor; productChange();">
         <i class="fa" ng-class="{'fa-check-square': enrollInProcessor, ' fa-square': !enrollInProcessor}">
           Processor
         </i>
       </a>
-      <a class="btn btn-sm btn-default" ng-click="enrollInSchedule = !enrollInSchedule" ng-disabled="!enrollInProcessor" title="Schedule requires processor enrollemnt.">
+      <a class="btn btn-sm btn-default" ng-click="enrollInSchedule = !enrollInSchedule; productChange();" ng-disabled="!enrollInProcessor" title="Schedule requires processor enrollemnt.">
         <i class="fa" ng-class="{'fa-check-square': enrollInSchedule, ' fa-square': !enrollInSchedule}">
           Sync Schedule
         </i>
       </a>
+      <a class="btn btn-sm btn-default" ng-click="enrollInGift = !enrollInGift; productChange();">
+        <i class="fa" ng-class="{'fa-check-square': enrollInGift, 'fa-square': !enrollInGift}">
+          Gift
+        </i>
+      </a>
     </div>
   </div>
-    <button type="submit" class="btn btn-primary btn-block m-t-10" ng-disabled="!(enrollInProcessor || enrollInSchedule)" title="Select a product">Next Step</button>
+    <button type="submit" class="btn btn-primary btn-block m-t-10" ng-disabled="!(enrollInProcessor || enrollInSchedule || enrollInGift)" title="Select a product">Next Step</button>
 </form>
 <form ng-show="wizardStep === 'Contacts'" ng-submit="submitContacts()">
   <h5>Submit Contacts</h5>
@@ -113,7 +117,7 @@
   </div>
   <div class="row">
     <div class="form-group form-group-default col-sm-6">
-      <a class="btn btn-primary btn-block" ng-click="wizardStep = 'Merchant'">Back</a>
+      <a class="btn btn-primary btn-block" ng-click="prevStep()">Back</a>
     </div>
     <div class="form-group form-group-default col-sm-6">
       <button class="btn btn-primary btn-block" type="submit">Next</button>
@@ -147,7 +151,7 @@
   </div>
   <div class="row">
     <div class="col-sm-6">
-      <a ng-click="wizardStep = 'Contacts'" class="btn btn-primary btn-block"> Back </a>
+      <a ng-click="prevStep()" class="btn btn-primary btn-block"> Back </a>
     </div>
     <div class="col-sm-6">
       <button class="btn btn-primary btn-block" type="submit"> Next </button>
@@ -172,7 +176,7 @@
   </div>
   <div class="row">
     <div class="form-group form-group-default col-sm-12">
-    <label>Merchat (Mid) Category</label>
+    <label>Merchant (Mid) Category</label>
     <select ng-model="enrollGateway.Category" class="form-control" ng-disabled="processorEnrollmentSuccessful">
       <option selected disabled value="">Select Category</option>
       <option ng-repeat="option in midCategories">{{option}}</option>
@@ -304,7 +308,7 @@
   </div>
   <div class="row">
     <div class="col-sm-6">
-      <a class="btn btn-block btn-primary" ng-click="wizardStep = 'Addresses'">Back</a>
+      <a class="btn btn-block btn-primary" ng-click="prevStep()">Back</a>
     </div>
     <div class="col-sm-6">
       <button class="btn btn-block btn-primary" type="submit"> Next </button>
@@ -329,12 +333,44 @@
       </select>
     </div>
     <div class="col-sm-6">
-      <a class="btn btn-primary btn-lg btn-block" ng-click="wizardStep = 'Processor'"> Back </a>
+      <a class="btn btn-primary btn-lg btn-block" ng-click="prevStep()"> Back </a>
     </div>
     <div class="col-sm-6">
       <button type="submit" class="btn btn-primary btn-lg btn-block">Next</button>
     </div>
   </div>
+</form>
+<form ng-show="wizardStep === 'Gift'" ng-submit="submitGift()">
+    <h5>Gift Enrollment</h5>
+    <div class="row">
+      <div class="form-group form-group-default  col-sm-12">
+        <label>Gift Type</label>
+        <select ng-model="giftType" class="form-control" ng-readonly="giftEnrollment.ID">
+          <option selected>Standalone</option>
+          <option>Join Exiting Group</option>
+        </select>
+      </div>
+    </div>
+    <div class="row" ng-hide="giftType === 'Standalone'">
+      <div class="form-group form-group-default col-sm-12">
+        <label>Group Name</label>
+        <input type="text" class="form-control" ng-model="giftEnrollment.GroupName" ng-readonly="giftEnrollment.ID" ng-required="giftType!=='Standalone'" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group form-group-default  col-sm-12">
+        <label>Notes</label>
+          <input type="text" maxlength="255" placeholder="Contact me about ordering gift cards." class="form-control" ng-model="giftEnrollment.Notes" ng-readonly="giftEnrollment.ID" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <a class="btn btn-primary btn-lg btn-block" ng-click="prevStep()"> Back </a>
+      </div>
+      <div class="col-sm-6">
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Next</button>
+      </div>
+    </div>
 </form>
 <form ng-show="wizardStep === 'TermsAndConditions'" ng-submit="submitTermsAndConditions()">
   <div class="row">
