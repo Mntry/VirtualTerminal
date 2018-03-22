@@ -7,26 +7,32 @@
 <div ng-hide="$root.config.url">cannot use virtual terminal until configured</div>
   <form ng-submit="submitRequest()" ng-show="$root.config.url" class="m-t-10">
     <div class="row">
-      <div class="col-sm-3">
-        <div class="btn-group form-group form-group-default">
+      <div ng-class="{'col-sm-4':showEntryModeToggle, 'col-sm-6':!showEntryModeToggle}">
+        <div class="form-group form-group-default">
           <label>Sale Type</label>
-          <a class="btn btn-xs btn-complete" ng-click="op = 'Credit'" ng-class="{active:op=='Credit'}">Credit</a>
-          <a class="btn btn-xs btn-complete" ng-click="op = 'Gift';tranType='Sale';" ng-class="{active:op=='Gift'}">Gift</a>
+          <select class="form-control" ng-model="op">
+            <option value="Credit">Credit</option>
+            <option value="Gift">Gift</option>
+          </select>
         </div>
       </div>
-      <div class="col-sm-5" ng-show="showEntryModeToggle">
-        <div class="btn-group form-group form-group-default">
+      <div class="col-sm-4" ng-show="showEntryModeToggle">
+        <div class="form-group form-group-default">
           <label>Entry Mode</label>
-          <a class="btn btn-xs btn-success" ng-click="mode = 'Manual'" ng-class="{active:mode=='Manual'}">Manual</a>
-          <a class="btn btn-xs btn-success" ng-click="mode = 'Swipe'" ng-class="{active:mode=='Swipe'}">Swipe</a>
-          <a class="btn btn-xs btn-success" ng-click="mode = 'Token'" ng-disabled="op == 'Gift'" ng-class="{active:mode=='Token'}">Token</a>
+          <select class="form-control" ng-model="mode">
+            <option value="Manual">Manual</option>
+            <option value="Swipe">Swipe</option>
+            <option value="Token" ng-disabled="op === 'Gift'">Token</option>
+          </select>
         </div>
       </div>
-      <div class="col-sm-4">
-        <div class="btn-group form-group form-group-default" ng-class="{disabled:op!='Credit'}">
-          <label>Tranaction Type</label>
-          <a ng-disabled="op!='Credit'" class="btn btn-xs btn-complete" ng-click="tranType = 'Sale'" ng-class="{active:tranType=='Sale'}">Sale</a>
-          <a ng-disabled="op!='Credit'" class="btn btn-xs btn-complete" ng-click="tranType = 'Return'" ng-class="{active:tranType=='Return'}">Return</a>
+      <div ng-class="{'col-sm-4':showEntryModeToggle, 'col-sm-6':!showEntryModeToggle}">
+        <div class="form-group form-group-default" ng-class="{disabled:op!='Credit'}">
+          <label>Transaction Type</label>
+          <select class="form-control" ng-model="tranType">
+            <option value="Sale" ng-disabled="op==='Gift'">Sale</option>
+            <option value="Return" ng-disabled="op==='Gift'">Return</option>
+          </select>
         </div>
       </div>
     </div>
