@@ -20,9 +20,11 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 	$scope.addresses = [{Type: "Physical Address"}, {Type: "Mailing Address"}];
   $scope.enrollGateway = {};
 	$scope.enrollSchedule = {};
+	$scope.enrollEngage = {};
 	$scope.gatewayProcessor = "";
 	$scope.processors = [];
 	$scope.giftType  = 'Standalone';
+	$scope.engageType  = 'Standalone';
 	$scope.giftEnrollment = {};
 	$scope.confirmation = {};
   $scope.scheduleCredentials = {};
@@ -41,6 +43,9 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 		}
 		if($scope.enrollInGift){
 			$scope.stepsToInclude.push('Gift');
+		}
+		if($scope.enrollInEngage){
+			$scope.stepsToInclude.push('Engage');
 		}
 		$scope.stepsToInclude.push('TermsAndConditions');
 	}
@@ -221,7 +226,20 @@ function($rootScope, $scope, $localStorage, $boarding, $location){
 		}else{
 			$scope.nextStep();
 		}
-	}
+	};
+	$scope.submitEngage = function () {
+		if(!$scope.engageEnrollment.ID){
+			$boarding.submitEngage($scope.merchantID, $scope.engageEnrollment, function(response){
+				if(response.isSuccessful){
+					$scope.engageEnrollment = response.content;
+					$scope.nextStep();
+				}
+			});
+		}else{
+			$scope.nextStep();
+		}
+	};
+
 
 	$scope.getTandC = function(){
 		$boarding.getTandC($scope.merchantID, function(response){

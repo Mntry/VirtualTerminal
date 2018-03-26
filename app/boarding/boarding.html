@@ -72,9 +72,14 @@
           Gift
         </i>
       </a>
+      <a class="btn btn-sm btn-default" ng-click="enrollInEngage = !enrollInEngage; productChange();">
+        <i class="fa" ng-class="{'fa-check-square': enrollInEngage, 'fa-square': !enrollInEngage}">
+          Engage
+        </i>
+      </a>
     </div>
   </div>
-    <button type="submit" class="btn btn-primary btn-block m-t-10" ng-disabled="!(enrollInProcessor || enrollInSchedule || enrollInGift)" title="Select a product">Next Step</button>
+    <button type="submit" class="btn btn-primary btn-block m-t-10" ng-disabled="!(enrollInProcessor || enrollInSchedule || enrollInGift || enrollInEngage)" title="Select a product">Next Step</button>
 </form>
 <form ng-show="wizardStep === 'Contacts'" ng-submit="submitContacts()">
   <h5>Submit Contacts</h5>
@@ -361,6 +366,38 @@
       <div class="form-group form-group-default  col-sm-12">
         <label>Notes</label>
           <input type="text" maxlength="255" placeholder="Contact me about ordering gift cards." class="form-control" ng-model="giftEnrollment.Notes" ng-readonly="giftEnrollment.ID" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <a class="btn btn-primary btn-lg btn-block" ng-click="prevStep()"> Back </a>
+      </div>
+      <div class="col-sm-6">
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Next</button>
+      </div>
+    </div>
+</form>
+<form ng-show="wizardStep === 'Engage'" ng-submit="submitEngage()">
+    <h5>Engage Enrollment</h5>
+    <div class="row">
+      <div class="form-group form-group-default  col-sm-12">
+        <label>Engage Type</label>
+        <select ng-model="engageType" class="form-control" ng-readonly="engageEnrollment.ID">
+          <option selected>Standalone</option>
+          <option>Join Exiting Group</option>
+        </select>
+      </div>
+    </div>
+    <div class="row" ng-hide="engageType === 'Standalone'">
+      <div class="form-group form-group-default col-sm-12">
+        <label>Group Name</label>
+        <input type="text" class="form-control" ng-model="engageEnrollment.GroupName" ng-readonly="engageEnrollment.ID" ng-required="engageType!=='Standalone'" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group form-group-default  col-sm-12">
+        <label>Notes</label>
+          <input type="text" maxlength="255" placeholder="Place any questions here." class="form-control" ng-model="engageEnrollment.Notes" ng-readonly="engageEnrollment.ID" />
       </div>
     </div>
     <div class="row">

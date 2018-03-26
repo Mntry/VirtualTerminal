@@ -170,6 +170,9 @@ app.service('$boarding', [ '$http', '$rootScope', '$localStorage', function($htt
   this.submitGift = function(merchantID, giftPayload, callback) {
     sendRequest(callback, 'POST', 'Merchants/' + merchantID + "/StoredValue", giftPayload);
   };
+  this.submitEngage = function(merchantID, engagePayload, callback) {
+    sendRequest(callback, 'PUT', 'Merchants/' + merchantID + '/Engage', engagePayload);
+  };
 
   this.getTandC = function(merchantID, callback){
     sendRequest(callback, 'GET', 'Merchants/'+merchantID+"/TermsAndConditions");
