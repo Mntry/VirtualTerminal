@@ -79,7 +79,7 @@
         <label>Feature Flags</label>
         <a class="btn btn-sm btn-default" ng-click="promo = !promo" ng-disabled="op == 'Sale' || op == 'Balance' || op == 'Set'"><i class="fa" ng-class="{'fa-check-square':promo, 'fa-square':!promo}"> Promotional</i></a>
         <a class="btn btn-sm btn-default" ng-click="lock = !lock" ng-disabled="!(op == 'Create' || op == 'Set')"><i class="fa" ng-class="{'fa-check-square':lock, 'fa-square':!lock}"> Account Lock</i></a>
-        <a class="btn btn-sm btn-default" ng-click="overwriteCVV = !overwriteCVV" ng-disabled="op == 'Create'"><i class="fa" ng-class="{'fa-check-square':overwriteCVV, 'fa-square':!overwriteCVV}"> Overwrite CVV</i></a>
+        <a class="btn btn-sm btn-default" ng-click="overrideCVV = !overrideCVV" ng-disabled="op == 'Create'"><i class="fa" ng-class="{'fa-check-square':overrideCVV, 'fa-square':!overrideCVV}"> Override CVV</i></a>
       </div>
     </div>
   </div>

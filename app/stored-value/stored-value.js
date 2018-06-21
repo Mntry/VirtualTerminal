@@ -19,7 +19,7 @@ function($scope, $sv) {
     $scope.resetAdvanced = function(){
       $scope.promo = false;
       $scope.lock = false;
-      $scope.overwriteCVV = false;
+      $scope.overrideCVV = false;
       $scope.invoiceNo = '';
       $scope.identifier = '';
       $scope.creditLimit = '';
@@ -64,7 +64,7 @@ function($scope, $sv) {
       };
       if ($scope.showAdvanced){
         result.Identifier = $scope.identifier;
-        result.OverrideCVV = $scope.overwriteCVV;
+        result.OverrideCVV = $scope.overrideCVV;
       }
       return result;
     };
@@ -90,7 +90,7 @@ function($scope, $sv) {
       req.Amount = $scope.amount;
       if($scope.showAdvanced){
         req.Identifier = $scope.identifier;
-        req.OverrideCVV = $scope.overwriteCVV;
+        req.OverrideCVV = $scope.overrideCVV;
         req.InvoiceNo = $scope.InvoiceNo;
       }
       return req;
